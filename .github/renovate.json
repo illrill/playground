@@ -16,7 +16,7 @@
   ],
   "customManagers": [
     {
-      "fileMatch": ["versions.yaml"],
+      "fileMatch": ["mgmt\/.+\/versions.yaml$"],
       "matchStrings": ["#\\s*renovate:\\s*(datasource=(?<datasource>.*?) )?depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s*\\w*:\\s*\"?(?<currentValue>.+?)\"?\\s"],
       "datasourceTemplate": "github-releases"
     }
