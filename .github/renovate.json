@@ -3,7 +3,7 @@
   "extends": [
     "config:base"
   ],
-  "commitMessagePrefix": "chore",
+  "commitMessagePrefix": "chore:",
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard",
   "labels": ["renovatebot"],
