@@ -13,7 +13,7 @@
       "automerge": true,
       "matchDatasources": ["helm"]
     }
-  ]
+  ],
   "customManagers": [
     {
       "fileMatch": ["versions.yaml"],
