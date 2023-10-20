@@ -6,7 +6,14 @@
   "commitMessagePrefix": "chore:",
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard",
-  "labels": ["renovatebot"],
+  "labels": ["kind/renovate"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "matchDatasources": ["helm"]
+    }
+  ]
   "customManagers": [
     {
       "fileMatch": ["versions.yaml"],
