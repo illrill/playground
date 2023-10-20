@@ -1,0 +1,11 @@
+apiVersion: v2
+name: illrill
+type: application
+version: 1.0.0
+dependencies:
+  - name: cert-manager
+    version: v1.13.0
+    repository: https://charts.jetstack.io
+  - name: external-dns
+    version: 1.12.1
+    repository: https://kubernetes-sigs.github.io/external-dns
