@@ -1,0 +1,16 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Renovate Dashboard",
+  "labels": ["renovatebot"],
+  "regexManagers": [
+    {
+      "fileMatch": ["versions.yaml"],
+      "matchStrings": ["#\\s*renovate:\\s*(datasource=(?<datasource>.*?) )?depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s*\\w*:\\s*\"?(?<currentValue>.+?)\"?\\s"],
+      "datasourceTemplate": "github-releases"
+    }
+  ]
+}
