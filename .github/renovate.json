@@ -4,6 +4,7 @@
     "config:base"
   ],
   "commitMessagePrefix": "chore:",
+  "commitMessageTopic": "{{depName}}",
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard",
   "labels": ["kind/renovate"],
