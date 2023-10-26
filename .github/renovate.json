@@ -4,7 +4,6 @@
     "config:base"
   ],
   "commitMessagePrefix": "chore:",
-  "commitMessageTopic": "{{depName}}",
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard",
   "labels": ["kind/renovate"],
@@ -13,6 +12,10 @@
       "matchUpdateTypes": ["patch"],
       "automerge": true,
       "matchDatasources": ["helm"]
+    },
+    {
+      "matchManagers": ["helmv3", "regex"],
+      "commitMessageTopic": "{{depName}}"
     }
   ],
   "customManagers": [
