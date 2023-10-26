@@ -1,45 +1,28 @@
 {
-  "config": {
-    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": [
-      "mergeConfidence:all-badges",
-      "config:recommended"
-    ],
-    "commitMessagePrefix": "chore:",
-    "dependencyDashboard": true,
-    "dependencyDashboardTitle": "Renovate Dashboard",
-    "labels": [
-      "kind/renovate"
-    ],
-    "packageRules": [
-      {
-        "matchUpdateTypes": [
-          "patch"
-        ],
-        "automerge": true,
-        "matchDatasources": [
-          "helm"
-        ]
-      },
-      {
-        "matchManagers": [
-          "helmv3",
-          "regex"
-        ],
-        "commitMessageTopic": "{{depName}}"
-      }
-    ],
-    "customManagers": [
-      {
-        "customType": "regex",
-        "fileMatch": [
-          "mgmt/versions.yaml$"
-        ],
-        "matchStrings": [
-          "#\\s*renovate:\\s*(datasource=(?<datasource>.*?) )?depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s*\\w*:\\s*\"?(?<currentValue>.+?)\"?\\s"
-        ],
-        "datasourceTemplate": "github-releases"
-      }
-    ]
-  }
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "commitMessagePrefix": "chore:",
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Renovate Dashboard",
+  "labels": ["kind/renovate"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "matchDatasources": ["helm"]
+    },
+    {
+      "matchManagers": ["helmv3", "regex"],
+      "commitMessageTopic": "{{depName}}"
+    }
+  ],
+  "customManagers": [
+    {
+      "fileMatch": ["mgmt\/versions.yaml$"],
+      "matchStrings": ["#\\s*renovate:\\s*(datasource=(?<datasource>.*?) )?depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s*\\w*:\\s*\"?(?<currentValue>.+?)\"?\\s"],
+      "datasourceTemplate": "github-releases"
+    }
+  ]
 }
