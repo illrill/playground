@@ -10,18 +10,31 @@ jobs:
         environment:
           - use2-npr
           - euwe-npr
+    environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v4
       - run: echo ${{ matrix.environment }}
-#  deployment:
-#    needs: validation
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        environment:
-#          - az-auea-npr
-#          - az-euwe-npr
-#    uses: ./.github/workflows/network-deployment.yml
-#    with:
-#      environment: ${{ matrix.environment }}
-#    secrets: inherit
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment:
+          - use2-npr
+          - euwe-npr
+    environment: ${{ matrix.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo ${{ matrix.environment }}
+  verify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment:
+          - use2-npr
+          - euwe-npr
+    environment: ${{ matrix.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo ${{ matrix.environment }}
