@@ -1,5 +1,7 @@
 name: workload
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -14,6 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: echo ${{ matrix.environment }}
+      - run: echo ${{ vars.K8S_CLUSTER }}
   deploy:
     needs: validate
     runs-on: ubuntu-latest
@@ -26,6 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: echo ${{ matrix.environment }}
+      - run: echo ${{ vars.K8S_CLUSTER }}
   verify:
     needs: deploy
     runs-on: ubuntu-latest
@@ -38,3 +42,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: echo ${{ matrix.environment }}
+      - run: echo ${{ vars.K8S_CLUSTER }}
