@@ -1,4 +1,0 @@
-# renovate: depName=kubernetes-sigs/cluster-api
-capi: v1.5.1
-# renovate: depName=kubernetes-sigs/cluster-api-provider-azure
-capz: v1.11.2
