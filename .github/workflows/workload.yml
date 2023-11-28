@@ -24,11 +24,12 @@ jobs:
         if: ${{ inputs.environment != '' }}
         run: echo environments="['${{ inputs.environment }}']" >> $GITHUB_OUTPUT
     outputs:
-      environments: ${{ toJSON(steps.*.outputs.environments) }}
+      environments: ${{ steps.*.outputs.environments }}
   echo:
     needs: init
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         environment: ${{ fromJSON(needs.init.outputs.environments) }}
     environment: ${{ matrix.environment }}
