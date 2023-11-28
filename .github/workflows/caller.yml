@@ -1,7 +1,10 @@
-name: workload
+name: caller
 on:
   workflow_dispatch:
 
 jobs:
   echo:
     uses: ./.github/workflows/workload.yml
+    with:
+      e2e-test: true
+      e2e-test-environment: euno-prd
