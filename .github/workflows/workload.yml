@@ -15,6 +15,7 @@ jobs:
   init:
     runs-on: ubuntu-latest
     steps:
+      - run: echo ${{ github.event_name }}
       - id: default
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: echo environments="${{ env.ENVIRONMENTS }}" >> $GITHUB_OUTPUT
