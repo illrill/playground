@@ -1,0 +1,7 @@
+name: workload
+on:
+  workflow_dispatch:
+
+jobs:
+  echo:
+    uses: ./.github/workflows/workload.yml
