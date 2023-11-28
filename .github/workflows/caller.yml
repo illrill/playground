@@ -1,8 +1,5 @@
 name: caller
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       pr-number:
@@ -11,13 +8,9 @@ on:
         required: true
 
 jobs:
-  echo:
-    if: github.event_name == 'workflow_dispatch'
+  override:
     uses: ./.github/workflows/workload.yml
     with:
       environment: euno-${{inputs.pr-number}}
-  push:
-    if: github.event_name == 'push'
+  default:
     uses: ./.github/workflows/workload.yml
-    with:
-      environment: euno-${{inputs.pr-number}}

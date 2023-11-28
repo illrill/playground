@@ -4,12 +4,13 @@ on:
   workflow_call:
     inputs:
       environment:
-        required: true
+        required: false
         description: If provided, the workflow deploys to this Github environment only.
         type: string
+        default: ''
 
 env:
-  ENVIRONMENTS: "['euwe-npr', 'use2-npr']"
+  DEFAULT_ENVIRONMENTS: "['euwe-npr', 'use2-npr']"
 
 jobs:
   init:
@@ -17,10 +18,10 @@ jobs:
     steps:
       - run: echo ${{ github.event_name }}
       - id: default
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: echo environments="${{ env.ENVIRONMENTS }}" >> $GITHUB_OUTPUT
+        if: inputs.environment == ''
+        run: echo environments="${{ env.DEFAULT_ENVIRONMENTS }}" >> $GITHUB_OUTPUT
       - id: override
-        if: ${{ github.event_name == 'workflow_call' }}
+        if: ${{ inputs.environment != '' }}
         run: echo environments="['${{ inputs.environment }}']" >> $GITHUB_OUTPUT
     outputs:
       environments: ${{ toJSON(steps.*.outputs.environments) }}
