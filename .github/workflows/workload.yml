@@ -18,6 +18,10 @@ jobs:
         environment:
           - use2-npr
           - euwe-npr
+        exclude:
+          - { inputs.e2e-test: true }
+        include:
+          - { environment: inputs.e2e-test-environment }
     environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v4
