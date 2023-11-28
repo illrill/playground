@@ -12,5 +12,3 @@ jobs:
     uses: ./.github/workflows/workload.yml
     with:
       environments: "['euno-${{inputs.pr-number}}']"
-  default:
-    uses: ./.github/workflows/workload.yml
