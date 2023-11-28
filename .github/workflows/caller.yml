@@ -5,10 +5,12 @@ on:
       pr-number:
         type: number
         description: Pull request number
-        required: false
+        required: true
 
 jobs:
   echo:
     uses: ./.github/workflows/workload.yml
     with:
       environments: "['euno-${{inputs.pr-number}}']"
+  default:
+    uses: ./.github/workflows/workload.yml
