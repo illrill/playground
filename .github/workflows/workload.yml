@@ -19,7 +19,7 @@ jobs:
       - run: echo ${{ github.event_name }}
       - id: default
         if: inputs.environment == ''
-        run: echo environments="${{ env.DEFAULT_ENVIRONMENTS }}" >> $GITHUB_OUTPUT
+        run: echo environments=$(echo ${{ env.DEFAULT_ENVIRONMENTS }} jq -c .) >> $GITHUB_OUTPUT
       - id: override
         if: ${{ inputs.environment != '' }}
         run: echo environments="['${{ inputs.environment }}']" >> $GITHUB_OUTPUT
