@@ -5,9 +5,22 @@ on:
     inputs:
       environments:
         required: false
+        description: If provided, the workflow only deploys to this Github environment
         type: string
-        default: "['use2-npr','euwe-npr']"
+        default: "['euwe-npr', 'use2-npr']"
 jobs:
+#  generate-matrix:
+#    env:
+#      DEFAULT_ENVIRONMENTS: "['euwe-npr', 'use2-npr']"
+#    runs-on: ubuntu-latest
+#    steps:
+#      - id: default
+#        run: echo environments=${{ env.DEFAULT_ENVIRONMENTS }} >> $GITHUB_OUTPUT
+#      - id: input-override
+#        if: ${{ inputs.environment != '' }}
+#        run: echo environments="['${{ inputs.environment }}']" >> $GITHUB_OUTPUT
+#    outputs:
+#      environments: ${{ steps.*.outputs.environments }}
   echo:
     runs-on: ubuntu-latest
     strategy:
