@@ -5,7 +5,7 @@ on:
       pr-number:
         type: number
         description: Pull request number
-        required: true
+        required: false
 
 jobs:
   echo:
