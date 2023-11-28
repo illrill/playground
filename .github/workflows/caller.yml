@@ -11,4 +11,4 @@ jobs:
   echo:
     uses: ./.github/workflows/workload.yml
     with:
-      environments: "['euno-${{inputs.pr-number}}']"
+      environment: euno-${{inputs.pr-number}}

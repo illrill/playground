@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
-      environments:
+      environment:
         required: true
         description: If provided, the workflow deploys to this Github environment only.
         type: string
@@ -17,10 +17,10 @@ jobs:
     steps:
       - id: default
         if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: echo environments=${{ env.ENVIRONMENTS }} >> $GITHUB_OUTPUT
+        run: echo environments="${{ env.ENVIRONMENTS }}" >> $GITHUB_OUTPUT
       - id: override
         if: ${{ github.event_name == 'workflow_call' }}
-        run: echo environments="['${{ inputs.environments }}']" >> $GITHUB_OUTPUT
+        run: echo environments="['${{ inputs.environment }}']" >> $GITHUB_OUTPUT
     outputs:
       environments: ${{ steps.*.outputs.environments }}
   echo:
