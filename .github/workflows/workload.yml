@@ -10,7 +10,7 @@ on:
         default: ''
 
 env:
-  DEFAULT_ENVIRONMENTS: "['euwe-npr', 'use2-npr']"
+  DEFAULT_ENVIRONMENTS: "['euwe-npr','use2-npr']"
 
 jobs:
   init:
@@ -19,19 +19,19 @@ jobs:
       - run: echo ${{ github.event_name }}
       - id: default
         if: inputs.environment == ''
-        run: echo environments=$(echo ${{ env.DEFAULT_ENVIRONMENTS }} jq -c .) >> $GITHUB_OUTPUT
+        run: echo environments="${{ env.DEFAULT_ENVIRONMENTS }}" >> $GITHUB_OUTPUT
       - id: override
         if: ${{ inputs.environment != '' }}
         run: echo environments="['${{ inputs.environment }}']" >> $GITHUB_OUTPUT
     outputs:
-      environments: ${{ steps.*.outputs.environments }}
+      environments: ${{ toJson(steps.*.outputs.environments) }}
   echo:
     needs: init
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        environment: ${{ fromJSON(needs.init.outputs.environments) }}
+        environment: ${{ fromJson(needs.init.outputs.environments) }}
     environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v4
