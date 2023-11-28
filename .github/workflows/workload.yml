@@ -22,7 +22,7 @@ jobs:
         if: ${{ github.event_name == 'workflow_call' }}
         run: echo environments="['${{ inputs.environment }}']" >> $GITHUB_OUTPUT
     outputs:
-      environments: ${{ steps.*.outputs.environments }}
+      environments: ${{ toJSON(steps.*.outputs.environments) }}
   echo:
     needs: init
     runs-on: ubuntu-latest
