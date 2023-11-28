@@ -7,10 +7,10 @@ on:
         required: false
         description: If provided, the workflow deploys to this Github environment only.
         type: string
-        default: ''
+        default: null
 
 env:
-  DEFAULT_ENVIRONMENTS: "['euwe-npr','use2-npr']"
+  DEFAULT_ENVIRONMENTS: '"[ "euwe-npr", "use2-npr" ]"'
 
 jobs:
   init:
@@ -18,11 +18,11 @@ jobs:
     steps:
       - run: echo ${{ github.event_name }}
       - id: default
-        if: inputs.environment == ''
-        run: echo environments="${{ env.DEFAULT_ENVIRONMENTS }}" >> $GITHUB_OUTPUT
+        if: inputs.environment == null
+        run: echo environments=$(echo ${{ env.DEFAULT_ENVIRONMENTS }} | jq '.|tostring') >> $GITHUB_OUTPUT
       - id: override
-        if: ${{ inputs.environment != '' }}
-        run: echo environments="['${{ inputs.environment }}']" >> $GITHUB_OUTPUT
+        if: ${{ inputs.environment != null }}
+        run: echo environments=$(echo '"[ "${{ inputs.environment }}" ]"' | jq '.|tostring') >> $GITHUB_OUTPUT
     outputs:
       environments: ${{ toJson(steps.*.outputs.environments) }}
   echo:
