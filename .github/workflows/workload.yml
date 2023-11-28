@@ -3,29 +3,18 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
-      e2e-test:
-        required: true
-        type: boolean
-        default: false
-      e2e-test-environment:
+      environments:
         required: false
         type: string
+        default: "['use2-npr','euwe-npr']"
 jobs:
   echo:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment:
-          - use2-npr
-          - euwe-npr
-        exclude:
-          - { inputs.e2e-test: true }
-        include:
-          - { environment: inputs.e2e-test-environment }
+        environment: ${{ fromJSON(inputs.environments) }}
     environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v4
       - run: echo ${{ matrix.environment }}
       - run: echo ${{ vars.K8S_CLUSTER }}
-      - run: echo ${{ inputs.e2e-test }}
-      - run: echo ${{ inputs.e2e-test-environment }}
