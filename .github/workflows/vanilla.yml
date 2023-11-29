@@ -12,21 +12,17 @@ jobs:
   init:
     runs-on: ubuntu-latest
     steps:
-      - id: echo
-        env:
-          INPUT_ENVIRONMENT: ${{ inputs.environment }}
-          DEFAULT_ENVIRONMENTS: '["euwe-npr", "use2-npr"]'
-        run: |
-          echo $INPUT_ENVIRONMENT
-          echo $DEFAULT_ENVIRONMENTS
-          MATRIX=$(echo $INPUT_ENVIRONMENT | jq -R '{ include: [{ environment: . }] }'); 
-     # - run: echo CONTENT="["environment":"${{ inputs.environment }}"]" >> $GITHUB_OUTPUT
       - id: init
         env:
-          INPUT_ENVIRONMENT: ${{ inputs.environment }}
+          INPUTS_ENVIRONMENT: ${{ inputs.environment }}
+          DEFAULT_ENVIRONMENTS: '["euwe-npr", "use2-npr"]'
         run: |
-          echo matrix=$(echo $INPUT_ENVIRONMENT | jq -c -R '{ include: [{ environment: . }] }') >> $GITHUB_OUTPUT
-          # echo matrix="{\"include\":[{\"environment\":\"ose2-prd\"}]}" >> $GITHUB_OUTPUT
+          if [[ -n $INPUTS_ENVIRONMENT ]]
+          then
+            echo matrix=$(echo $INPUTS_ENVIRONMENT | jq -c -R '{ include: [{ environment: . }] }') >> $GITHUB_OUTPUT
+          else
+            echo matrix=$(echo $DEFAULT_ENVIRONMENTS | jq -c '{ include: [{ environment: .[] }] }') >> $GITHUB_OUTPUT
+          fi
           # echo matrix="{\"include\":[{\"project\":\"bar\"}]}" >> $GITHUB_OUTPUT
         #run: echo "CONTENT=$(jq -n -c '{"environment":["euwe-npr"]}')" >> $GITHUB_OUTPUT
       #  if: ${{ inputs.environment != '' }}
