@@ -9,8 +9,7 @@ jobs:
      # - run: echo CONTENT="["environment":"${{ inputs.environment }}"]" >> $GITHUB_OUTPUT
       - id: init
         run: |
-          # echo "matrix={\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT
-          echo "matrix={\"include\":[{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT
+          echo "matrix={\"include\":[{\"project\":\"bar\"}]}" >> $GITHUB_OUTPUT
         #run: echo "CONTENT=$(jq -n -c '{"environment":["euwe-npr"]}')" >> $GITHUB_OUTPUT
       #  if: ${{ inputs.environment != '' }}
     outputs:
@@ -38,6 +37,5 @@ jobs:
     steps:
 #      - uses: actions/checkout@v4
       - run: echo ${{ matrix.project }}
-      - run: echo ${{ matrix.config }}
 #      - run: echo ${{ matrix.environment }}
 #      - run: echo ${{ vars.K8S_CLUSTER }}
