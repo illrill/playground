@@ -25,8 +25,8 @@ jobs:
         env:
           INPUT_ENVIRONMENT: ${{ inputs.environment }}
         run: |
-          # echo matrix=$(echo $INPUT_ENVIRONMENT | jq -c -R '{ include: [{ environment: . }] } | tostring') >> $GITHUB_OUTPUT
-          echo matrix="{\"include\":[{\"environment\":\"ose2-prd\"}]}" >> $GITHUB_OUTPUT
+          echo matrix=$(echo $INPUT_ENVIRONMENT | jq -c -R '{ include: [{ environment: . }] }') >> $GITHUB_OUTPUT
+          # echo matrix="{\"include\":[{\"environment\":\"ose2-prd\"}]}" >> $GITHUB_OUTPUT
           # echo matrix="{\"include\":[{\"project\":\"bar\"}]}" >> $GITHUB_OUTPUT
         #run: echo "CONTENT=$(jq -n -c '{"environment":["euwe-npr"]}')" >> $GITHUB_OUTPUT
       #  if: ${{ inputs.environment != '' }}
