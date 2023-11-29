@@ -27,15 +27,16 @@ jobs:
   init:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ inputs.environment }}
-      - run: echo ${{ env.DEFAULT_ENVIRONMENTS }}
-      - run: echo ${{ github.event_name }}
       - id: default
         if: inputs.environment == ''
         run: |
-          echo "gonna use default"
-          echo ${{ env.DEFAULT_ENVIRONMENTS }}
-          echo environments=${{ env.DEFAULT_ENVIRONMENTS }} >> $GITHUB_OUTPUT
+          echo 'environments<<EOF' >> $GITHUB_OUTPUT
+          jq -n '[
+            "euwe-npr",
+            "use2-npr"
+          ]' >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+          # echo environments=${{ env.DEFAULT_ENVIRONMENTS }} >> $GITHUB_OUTPUT
       - id: override
         if: ${{ inputs.environment != '' }}
         run: echo environments=["${{ inputs.environment }}"] >> $GITHUB_OUTPUT
