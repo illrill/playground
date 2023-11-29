@@ -36,8 +36,8 @@ jobs:
         override:
           - ${{ inputs.environment != '' }}
         exclude:
-          - { override: true }
-          - { environment: "" }
+          - { environment: euwe-npr }
+          - { environment: use2-npr }
         include:
           - { environment: "${{ inputs.environment }}" }
     environment: ${{ matrix.environment }}
