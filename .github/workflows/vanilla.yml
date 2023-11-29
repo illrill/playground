@@ -8,18 +8,19 @@ on:
         type: string
         default: ''
 
+env:
+  DEFAULT_ENVIRONMENTS: '["euwe-npr", "use2-npr"]'
+  OVERRIDE_ENVIRONMENT: ${{ inputs.environment }}
+
 jobs:
-  init:
+  matrix:
     runs-on: ubuntu-latest
     steps:
-      - id: init
-        env:
-          INPUTS_ENVIRONMENT: ${{ inputs.environment }}
-          DEFAULT_ENVIRONMENTS: '["euwe-npr", "use2-npr"]'
+      - id: matrix
         run: |
-          if [[ -n $INPUTS_ENVIRONMENT ]]
+          if [[ -n $OVERRIDE_ENVIRONMENT ]]
           then
-            echo matrix=$(echo $INPUTS_ENVIRONMENT | jq -c -R '{ include: [{ environment: . }] }') >> $GITHUB_OUTPUT
+            echo matrix=$(echo $OVERRIDE_ENVIRONMENT | jq -c -R '{ include: [{ environment: . }] }') >> $GITHUB_OUTPUT
           else
             echo matrix=$(echo $DEFAULT_ENVIRONMENTS | jq -c '{ include: [{ environment: .[] }] }') >> $GITHUB_OUTPUT
           fi
