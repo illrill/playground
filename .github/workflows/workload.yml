@@ -29,31 +29,24 @@ jobs:
     steps:
       - id: default
         if: inputs.environment == ''
-        run: |
-          echo 'environments<<EOF' >> $GITHUB_OUTPUT
-          jq -n '[
-            "euwe-npr",
-            "use2-npr"
-          ]' >> $GITHUB_OUTPUT
-          echo 'EOF' >> $GITHUB_OUTPUT
-          # echo environments=${{ env.DEFAULT_ENVIRONMENTS }} >> $GITHUB_OUTPUT
+        run: echo "ENVIRONMENTS_JSON=$(jq -n -r '["euwe-npr","use2-npr"] | tostring')" >> $GITHUB_OUTPUT
       - id: override
         if: ${{ inputs.environment != '' }}
-        run: echo environments=["${{ inputs.environment }}"] >> $GITHUB_OUTPUT
+        run: echo ENVIRONMENTS_JSON=["${{ inputs.environment }}"] >> $GITHUB_OUTPUT
     outputs:
-      environments: ${{ toJson(steps.*.outputs.environments) }}
+      environments-matrix: ${{ toJson(steps.*.outputs.ENVIRONMENTS_JSON) }}
   echo:
     needs: init
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ needs.init.outputs.environments }}
+      - run: echo ${{ needs.init.outputs.ENVIRONMENTS_JSON }}
   matrix:
     needs: init
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        environment: ${{ fromJson(needs.init.outputs.environments) }}
+        environment: ${{ fromJson(needs.init.outputs.environments-matrix) }}
     environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v4
