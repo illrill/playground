@@ -15,14 +15,15 @@ jobs:
       - id: echo
         env:
           INPUT_ENVIRONMENT: ${{ inputs.environment }}
-          DEFAULT_ENVIRONMENTS: euwe-npr, use2-npr
+          DEFAULT_ENVIRONMENTS: '["euwe-npr", "use2-npr"]'
         run: |
           echo $INPUT_ENVIRONMENT
           echo $DEFAULT_ENVIRONMENTS
+          MATRIX=$(echo $INPUT_ENVIRONMENT | jq -R '{ include: [{ environment: . }] }'); 
      # - run: echo CONTENT="["environment":"${{ inputs.environment }}"]" >> $GITHUB_OUTPUT
       - id: init
         run: |
-          echo "matrix={\"include\":[{\"project\":\"bar\"}]}" >> $GITHUB_OUTPUT
+          echo matrix="{\"include\":[{\"project\":\"bar\"}]}" >> $GITHUB_OUTPUT
         #run: echo "CONTENT=$(jq -n -c '{"environment":["euwe-npr"]}')" >> $GITHUB_OUTPUT
       #  if: ${{ inputs.environment != '' }}
     outputs:
