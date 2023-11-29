@@ -30,18 +30,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        environment:
-          - euwe-npr
-          - use2-npr
-        override:
-          - ${{ inputs.environment != '' }}
-        exclude:
-          - { environment: euwe-npr }
-          - { environment: use2-npr }
         include:
-          - { environment: "${{ inputs.environment }}" }
+          - environment: euwe-npr
+          - environment: use2-npr
+#        environment:
+#          - euwe-npr
+#          - use2-npr
+##        override:
+#         - ${{ inputs.environment != '' }}
+#        exclude:
+#          - { environment: euwe-npr }
+#          - { environment: use2-npr }
+#        include:
+#          - { environment: "${{ inputs.environment }}" }
     environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v4
+      - run: echo ${{ matrix }}
       - run: echo ${{ matrix.environment }}
       - run: echo ${{ vars.K8S_CLUSTER }}
