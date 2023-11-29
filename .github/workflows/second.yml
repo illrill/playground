@@ -33,10 +33,11 @@ jobs:
         environment:
           - euwe-npr
           - use2-npr
-        shouldOverride:
+        override:
           - ${{ inputs.environment != '' }}
         exclude:
-          - { shouldOverride: true }
+          - { override: true }
+          - { environment: "" }
         include:
           - { environment: "${{ inputs.environment }}" }
     environment: ${{ matrix.environment }}
