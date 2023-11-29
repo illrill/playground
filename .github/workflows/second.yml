@@ -21,7 +21,7 @@ jobs:
     steps:
      # - run: echo CONTENT="["environment":"${{ inputs.environment }}"]" >> $GITHUB_OUTPUT
       - id: init
-        run: echo "CONTENT=$(jq -n -c '{"include":[{"environment":"euwe-npr"}]}')" >> $GITHUB_OUTPUT
+        run: echo "CONTENT=$(jq -n -c '{"environment":["euwe-npr"]}')" >> $GITHUB_OUTPUT
       #  if: ${{ inputs.environment != '' }}
     outputs:
       matrix: ${{ toJson(steps.init.outputs.CONTENT) }}
@@ -47,6 +47,6 @@ jobs:
     environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v4
-      - run: echo ${{ matrix }}
+      - run: echo ${{ matrix }} | jq .
       - run: echo ${{ matrix.environment }}
       - run: echo ${{ vars.K8S_CLUSTER }}
