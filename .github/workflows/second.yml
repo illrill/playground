@@ -20,10 +20,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      # - run: echo CONTENT="["environment":"${{ inputs.environment }}"]" >> $GITHUB_OUTPUT
-      - run: echo "CONTENT=$(jq -c -n '[{environment:"euwe-npr"}]')" >> $GITHUB_OUTPUT
+      - id: init
+        run: echo "CONTENT=$(jq -c -n '[{environment:"euwe-npr"}]')" >> $GITHUB_OUTPUT
       #  if: ${{ inputs.environment != '' }}
     outputs:
-      matrix: steps.*.outputs.CONTENT
+      matrix: ${{ toJson(steps.init.outputs.CONTENT) }}
   job:
     needs: init
     runs-on: ubuntu-latest
