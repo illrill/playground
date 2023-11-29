@@ -1,4 +1,4 @@
-name: second
+name: vanilla
 on:
   workflow_dispatch:
 
