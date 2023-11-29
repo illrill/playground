@@ -6,28 +6,38 @@ on:
     paths:
       - .github/workflows/workload.yml
   workflow_dispatch:
+    inputs:
+      environment:
+        required: false
+        description: If provided, the workflow deploys to this Github environment only.
+        type: string
+        default: ""
   workflow_call:
     inputs:
       environment:
         required: false
         description: If provided, the workflow deploys to this Github environment only.
         type: string
-        default: "def"
+        default: ""
 
 env:
-  DEFAULT_ENVIRONMENTS: '"[ "euwe-npr", "use2-npr" ]"'
+  DEFAULT_ENVIRONMENTS: '["euwe-npr","use2-npr"]'
 
 jobs:
   init:
     runs-on: ubuntu-latest
     steps:
       - run: echo ${{ inputs.environment }}
+      - run: echo ${{ env.DEFAULT_ENVIRONMENTS }}
       - run: echo ${{ github.event_name }}
       - id: default
-        if: inputs.environment == null
-        run: echo environments=$(echo ${{ env.DEFAULT_ENVIRONMENTS }} | jq '.|tostring') >> $GITHUB_OUTPUT
+        if: inputs.environment == ''
+        run: |
+          echo "gonna use default"
+          echo ${{ env.DEFAULT_ENVIRONMENTS }}
+          echo environments=$(echo ${{ env.DEFAULT_ENVIRONMENTS }} | jq '.|tostring') >> $GITHUB_OUTPUT
       - id: override
-        if: ${{ inputs.environment != null }}
+        if: ${{ inputs.environment != '' }}
         run: echo environments=$(echo '"[ "${{ inputs.environment }}" ]"' | jq '.|tostring') >> $GITHUB_OUTPUT
     outputs:
       environments: ${{ toJson(steps.*.outputs.environments) }}
