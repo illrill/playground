@@ -22,8 +22,11 @@ jobs:
           MATRIX=$(echo $INPUT_ENVIRONMENT | jq -R '{ include: [{ environment: . }] }'); 
      # - run: echo CONTENT="["environment":"${{ inputs.environment }}"]" >> $GITHUB_OUTPUT
       - id: init
+        env:
+          INPUT_ENVIRONMENT: ${{ inputs.environment }}
         run: |
-          echo matrix="{\"include\":[{\"project\":\"bar\"}]}" >> $GITHUB_OUTPUT
+          echo matrix=$(echo $INPUT_ENVIRONMENT | jq -c -R '{ include: [{ environment: . }] } | tostring')  >> $GITHUB_OUTPUT
+          # echo matrix="{\"include\":[{\"project\":\"bar\"}]}" >> $GITHUB_OUTPUT
         #run: echo "CONTENT=$(jq -n -c '{"environment":["euwe-npr"]}')" >> $GITHUB_OUTPUT
       #  if: ${{ inputs.environment != '' }}
     outputs:
@@ -50,6 +53,6 @@ jobs:
 #    environment: ${{ matrix.environment }}
     steps:
 #      - uses: actions/checkout@v4
-      - run: echo ${{ matrix.project }}
-#      - run: echo ${{ matrix.environment }}
+#      - run: echo ${{ matrix.project }}
+      - run: echo ${{ matrix.environment }}
 #      - run: echo ${{ vars.K8S_CLUSTER }}
