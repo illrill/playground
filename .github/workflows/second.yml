@@ -21,7 +21,7 @@ jobs:
     steps:
      # - run: echo CONTENT="["environment":"${{ inputs.environment }}"]" >> $GITHUB_OUTPUT
       - id: init
-        run: echo "CONTENT=$(jq -c -n '[{"environment":"euwe-npr"}] | tostring')" >> $GITHUB_OUTPUT
+        run: echo "CONTENT=$(jq -n '{"include":[{"environment":"euwe-npr"}]}')" >> $GITHUB_OUTPUT
       #  if: ${{ inputs.environment != '' }}
     outputs:
       matrix: ${{ toJson(steps.init.outputs.CONTENT) }}
@@ -30,8 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        include: ${{ fromJson(needs.init.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.init.outputs.matrix) }}
  #       include:
  #         - environment: euwe-npr
  #         - environment: use2-npr
