@@ -24,7 +24,7 @@ jobs:
 #        run: echo ENVIRONMENTS_JSON=["${{ inputs.environment }}"] >> $GITHUB_OUTPUT
 #    outputs:
 #      matrix: ${{ toJson(steps.override.outputs.ENVIRONMENTS_JSON) }}
-  gaga:
+  job:
 #    needs: init
     runs-on: ubuntu-latest
     strategy:
@@ -33,10 +33,10 @@ jobs:
         environment:
           - euwe-npr
           - use2-npr
-        override:
+        shouldOverride:
           - ${{ inputs.environment != '' }}
         exclude:
-          - { override: true }
+          - { shouldOverride: true }
         include:
           - { environment: "${{ inputs.environment }}" }
     environment: ${{ matrix.environment }}
