@@ -13,10 +13,10 @@ env:
   OVERRIDE_ENVIRONMENT: ${{ inputs.environment }}
 
 jobs:
-  matrix:
+  init:
     runs-on: ubuntu-latest
     steps:
-      - id: matrix
+      - id: init
         run: |
           if [[ -n $OVERRIDE_ENVIRONMENT ]]
           then
