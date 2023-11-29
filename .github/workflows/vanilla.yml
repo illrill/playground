@@ -13,7 +13,7 @@ jobs:
         #run: echo "CONTENT=$(jq -n -c '{"environment":["euwe-npr"]}')" >> $GITHUB_OUTPUT
       #  if: ${{ inputs.environment != '' }}
     outputs:
-      matrix: ${{ steps.init.outputs.matrix }}
+      matrix: ${{ steps.*.outputs.matrix }}
   job:
     needs: init
     runs-on: ubuntu-latest
