@@ -17,15 +17,15 @@ on:
 
 jobs:
   init:
-    if: ${{ inputs.environment != '' }}
     runs-on: ubuntu-latest
     steps:
      # - run: echo CONTENT="["environment":"${{ inputs.environment }}"]" >> $GITHUB_OUTPUT
       - run: echo CONTENT="["environment":"euwe-npr"]" >> $GITHUB_OUTPUT
+      #  if: ${{ inputs.environment != '' }}
     outputs:
       matrix: steps.*.outputs.CONTENT
   job:
-#    needs: init
+    needs: init
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
