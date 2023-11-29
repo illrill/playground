@@ -1,11 +1,24 @@
 name: vanilla
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        required: false
+        description: If provided, the workflow deploys to this Github environment only.
+        type: string
+        default: ''
 
 jobs:
   init:
     runs-on: ubuntu-latest
     steps:
+      - id: echo
+        env:
+          INPUT_ENVIRONMENT: ${{ inputs.environment }}
+          DEFAULT_ENVIRONMENTS: euwe-npr, use2-npr
+        run: |
+          echo $INPUT_ENVIRONMENT
+          echo $DEFAULT_ENVIRONMENTS
      # - run: echo CONTENT="["environment":"${{ inputs.environment }}"]" >> $GITHUB_OUTPUT
       - id: init
         run: |
@@ -13,7 +26,7 @@ jobs:
         #run: echo "CONTENT=$(jq -n -c '{"environment":["euwe-npr"]}')" >> $GITHUB_OUTPUT
       #  if: ${{ inputs.environment != '' }}
     outputs:
-      matrix: ${{ steps.*.outputs.matrix }}
+      matrix: ${{ steps.init.outputs.matrix }}
   job:
     needs: init
     runs-on: ubuntu-latest
