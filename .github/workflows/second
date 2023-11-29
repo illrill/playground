@@ -1,0 +1,46 @@
+name: second
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: false
+        description: If provided, the workflow deploys to this Github environment only.
+        type: string
+        default: ''
+  workflow_call:
+    inputs:
+      environment:
+        required: false
+        description: If provided, the workflow deploys to this Github environment only.
+        type: string
+        default: ''
+
+jobs:
+#  init:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - id: override
+#        if: ${{ inputs.environment != '' }}
+#        run: echo ENVIRONMENTS_JSON=["${{ inputs.environment }}"] >> $GITHUB_OUTPUT
+#    outputs:
+#      matrix: ${{ toJson(steps.override.outputs.ENVIRONMENTS_JSON) }}
+  gaga:
+#    needs: init
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment:
+          - euwe-npr
+          - use2-npr
+        override:
+          - ${{ inputs.environment != '' }}
+        exclude:
+          - { override: true }
+        include:
+          - { environment: "${{ inputs.environment }}" }
+    environment: ${{ matrix.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo ${{ matrix.environment }}
+      - run: echo ${{ vars.K8S_CLUSTER }}
