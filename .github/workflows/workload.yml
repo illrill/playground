@@ -1,5 +1,10 @@
 name: workload
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/workload.yml
   workflow_dispatch:
   workflow_call:
     inputs:
@@ -7,7 +12,7 @@ on:
         required: false
         description: If provided, the workflow deploys to this Github environment only.
         type: string
-        default: null
+        default: "def"
 
 env:
   DEFAULT_ENVIRONMENTS: '"[ "euwe-npr", "use2-npr" ]"'
@@ -16,6 +21,7 @@ jobs:
   init:
     runs-on: ubuntu-latest
     steps:
+      - run: echo ${{ inputs.environment }}
       - run: echo ${{ github.event_name }}
       - id: default
         if: inputs.environment == null
