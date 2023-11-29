@@ -1,5 +1,10 @@
 name: vanilla
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/vanilla.yml
   workflow_dispatch:
     inputs:
       environment:
