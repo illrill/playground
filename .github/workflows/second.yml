@@ -16,23 +16,24 @@ on:
         default: ''
 
 jobs:
-#  init:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - id: override
-#        if: ${{ inputs.environment != '' }}
-#        run: echo ENVIRONMENTS_JSON=["${{ inputs.environment }}"] >> $GITHUB_OUTPUT
-#    outputs:
-#      matrix: ${{ toJson(steps.override.outputs.ENVIRONMENTS_JSON) }}
+  init:
+    if: ${{ inputs.environment != '' }}
+    runs-on: ubuntu-latest
+    steps:
+     # - run: echo CONTENT="["environment":"${{ inputs.environment }}"]" >> $GITHUB_OUTPUT
+      - run: echo CONTENT="["environment":"euwe-npr"]" >> $GITHUB_OUTPUT
+    outputs:
+      matrix: steps.*.outputs.CONTENT
   job:
 #    needs: init
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - environment: euwe-npr
-          - environment: use2-npr
+        include: ${{ fromJson(needs.init.outputs.matrix) }}
+ #       include:
+ #         - environment: euwe-npr
+ #         - environment: use2-npr
 #        environment:
 #          - euwe-npr
 #          - use2-npr
