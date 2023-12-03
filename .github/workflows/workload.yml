@@ -21,7 +21,7 @@ jobs:
   gaga:
 #    needs: init
     runs-on: ubuntu-latest
-    environment: ${{ inputs.lab && format('mgmt-lab${0}', inputs.labInstance) || 'mgmt-cmn' }}
+    environment: ${{ inputs.lab && format('mgmt-lab{0}', inputs.labInstance) || 'mgmt-cmn' }}
     steps:
       - uses: actions/checkout@v4
       - run: echo "yes"
