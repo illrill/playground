@@ -1,0 +1,15 @@
+name: lab-setup
+on:
+  workflow_dispatch: # yamllint disable-line rule:empty-values
+    inputs:
+      labInstance:
+        type: number
+        description: Lab cluster instance. Most often a PR number.
+        required: true
+
+jobs:
+  workload:
+    uses: ./.github/workflows/workload.yml
+    with:
+      lab: true
+      labInstance: ${{ inputs.labInstance }}
