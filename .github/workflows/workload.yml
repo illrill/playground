@@ -10,7 +10,7 @@ on:
       labInstance:
         required: false
         description: "Lab cluster instance to deploy to. Required if lab is true."
-        type: number
+        type: string
   workflow_call:
     inputs:
       lab:
@@ -21,7 +21,7 @@ on:
       labInstance:
         required: false
         description: "Lab cluster instance to deploy to. Required if lab is true."
-        type: number
+        type: string
 jobs:
 #  init:
 #    runs-on: ubuntu-latest
