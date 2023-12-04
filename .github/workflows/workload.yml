@@ -3,11 +3,24 @@ on:
   workflow_dispatch:
     inputs:
       lab:
-        required: true
-        type: boolean
+        required: false
         default: false
+        description: "This is a deployment to a lab cluster. Defaults to false."
+        type: boolean
       labInstance:
-        required: true
+        required: false
+        description: "Lab cluster instance to deploy to. Required if lab is true."
+        type: number
+  workflow_call:
+    inputs:
+      lab:
+        required: false
+        default: false
+        description: "This is a deployment to a lab cluster. Defaults to false."
+        type: boolean
+      labInstance:
+        required: false
+        description: "Lab cluster instance to deploy to. Required if lab is true."
         type: number
 jobs:
 #  init:
