@@ -3,7 +3,7 @@ on:
   workflow_dispatch: # yamllint disable-line rule:empty-values
     inputs:
       labInstance:
-        type: number
+        type: string
         description: Lab cluster instance. Most often a PR number.
         required: true
 
