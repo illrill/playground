@@ -22,3 +22,7 @@ jobs:
           echo "Maintainer $MAINTAINER"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.issue.pull_request.head.ref }}
+      - run: git status
