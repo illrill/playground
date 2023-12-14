@@ -20,3 +20,5 @@ jobs:
           MAINTAINER=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain)
           echo maintainer=$MAINTAINER >> $GITHUB_ENV
           echo "Maintainer $MAINTAINER"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
