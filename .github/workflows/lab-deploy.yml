@@ -1,0 +1,24 @@
+name: lab-deploy
+on:
+  workflow_call:
+    inputs:
+      lab-instance:
+        type: string
+        description: Lab instance number
+        required: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ inputs.lab-instance }}/head
+      - run: |
+          git status
+          git diff
+      - run: echo "Creating lab instance ${{ inputs.lab-instance }}"

@@ -10,19 +10,18 @@ defaults:
     shell: bash
 
 jobs:
-  job:
+  authorize:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request
     steps:
       - run: echo "PR number ${{ github.event.issue.number }}"
       - run: |
           echo "Comment author ${{ github.event.comment.user.login }}"
-          MAINTAINER=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain)
-          echo maintainer=$MAINTAINER >> $GITHUB_ENV
-          echo "Maintainer $MAINTAINER"
+          echo AUTHORIZED=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain) >> $GITHUB_ENV
+        id: authorize
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/checkout@v4
-        with:
-          ref: refs/pull/${{ github.event.issue.number }}/head
-      - run: git status
+      - if: steps.authorize.outputs.AUTHORIZED == 'true'
+        run: echo "Authorized"
+      - if: steps.authorize.outputs.AUTHORIZED == 'false'
+        run: echo "Not authorized"
