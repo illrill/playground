@@ -17,7 +17,7 @@ jobs:
       - run: echo "PR number ${{ github.event.issue.number }}"
       - run: |
           echo "Comment author ${{ github.event.comment.user.login }}"
-          echo AUTHORIZED=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain) >> $GITHUB_ENV
+          echo AUTHORIZED=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain) >> $GITHUB_OUTPUT
         id: authorize
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
