@@ -13,20 +13,27 @@ jobs:
   authorize:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request
+    outputs:
+      AUTHORIZED: ${{ steps.authorize.outputs.AUTHORIZED }}
+    steps:
+      - run: echo "PR number ${{ github.event.issue.number }}"
+      - id: authorize
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Comment author ${{ github.event.comment.user.login }}"
+          echo AUTHORIZED=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain) >> $GITHUB_OUTPUT
+      - if: steps.authorize.outputs.AUTHORIZED == 'false'
+        run: gh pr comment ${{ github.event.issue.number }} -b "Sorry, only maintainers are allowed to trigger the lab deploy."
+  execute:
+    needs: authorize
+    runs-on: ubuntu-latest
+    if: needs.authorize.outputs.AUTHORIZED == 'true'
     steps:
       - uses: actions/checkout@v4
         with:
           ref: refs/pull/${{ github.event.issue.number }}/head
-      - run: echo "PR number ${{ github.event.issue.number }}"
-      - run: |
-          echo "Comment author ${{ github.event.comment.user.login }}"
-          echo AUTHORIZED=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain) >> $GITHUB_OUTPUT
-        id: authorize
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - if: steps.authorize.outputs.AUTHORIZED == 'false'
-        run: gh pr comment ${{ github.event.issue.number }} -b "Sorry, only maintainers are allowed to trigger the lab deploy."
-      - if: steps.authorize.outputs.AUTHORIZED == 'true'
-        uses: ./.github/workflows/lab-deploy.yml
+      - uses: ./.github/workflows/lab-deploy.yml
         with:
           labInstance: ${{ github.event.issue.number }}
+  
