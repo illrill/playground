@@ -21,6 +21,7 @@ jobs:
         id: authorize
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "Authorized ${{ steps.authorize.outputs.AUTHORIZED }}"
       - if: steps.authorize.outputs.AUTHORIZED == 'true'
         run: echo "Authorized"
       - if: steps.authorize.outputs.AUTHORIZED == 'false'
