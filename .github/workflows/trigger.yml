@@ -1,0 +1,22 @@
+name: trigger
+on:
+  issue_comment:
+    types:
+      - created
+      - edited
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request
+    steps:
+      - run: echo "PR number ${{ github.event.issue.number }}"
+      - run: |
+          echo "Comment author ${{ github.event.comment.user.login }}"
+          MAINTAINER=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain)
+          echo maintainer=$MAINTAINER >> $GITHUB_ENV
+          echo "Maintainer $MAINTAINER"
