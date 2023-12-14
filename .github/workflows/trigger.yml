@@ -21,8 +21,9 @@ jobs:
         id: authorize
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo "Authorized ${{ steps.authorize.outputs.AUTHORIZED }}"
-      - if: steps.authorize.outputs.AUTHORIZED == 'true'
-        run: echo "Authorized"
       - if: steps.authorize.outputs.AUTHORIZED == 'false'
-        run: echo "Not authorized"
+        run: gh pr comment ${{ github.event.issue.number }} -b "Sorry, only maintainers are allowed to trigger the lab deploy."
+      - if: steps.authorize.outputs.AUTHORIZED == 'true'
+        uses: ./.github/workflows/lab-deploy.yml
+        with:
+          labInstance: ${{ github.event.issue.number }}

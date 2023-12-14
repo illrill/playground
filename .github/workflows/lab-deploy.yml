@@ -2,7 +2,7 @@ name: lab-deploy
 on:
   workflow_call:
     inputs:
-      lab-instance:
+      labInstance:
         type: string
         description: Lab instance number
         required: true
@@ -17,8 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: refs/pull/${{ inputs.lab-instance }}/head
+          ref: refs/pull/${{ inputs.labInstance }}/head
       - run: |
           git status
           git diff
-      - run: echo "Creating lab instance ${{ inputs.lab-instance }}"
+      - run: echo "Creating lab instance ${{ inputs.labInstance }}"
