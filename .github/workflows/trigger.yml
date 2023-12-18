@@ -28,7 +28,7 @@ jobs:
   lab-deploy:
     needs: authorize
     if: needs.authorize.outputs.AUTHORIZED == 'true'
-    uses: ${{ github.repository }}/.github/workflows/lab-deploy.yml@refs/pull/${{ github.event.issue.number }}/head
+    uses: ./.github/workflows/lab-deploy.yml
     with:
       labInstance: ${{ github.event.issue.number }}
   
