@@ -25,15 +25,10 @@ jobs:
           echo AUTHORIZED=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain) >> $GITHUB_OUTPUT
       - if: steps.authorize.outputs.AUTHORIZED == 'false'
         run: gh pr comment ${{ github.event.issue.number }} -b "Sorry, only maintainers are allowed to trigger the lab deploy."
-  execute:
+  lab-deploy:
     needs: authorize
-    runs-on: ubuntu-latest
     if: needs.authorize.outputs.AUTHORIZED == 'true'
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: refs/pull/${{ github.event.issue.number }}/head
-      - uses: ./.github/workflows/lab-deploy.yml
-        with:
-          labInstance: ${{ github.event.issue.number }}
+    uses: ${{ github.repository }}/.github/workflows/lab-deploy.yml@refs/pull/${{ github.event.issue.number }}/head
+    with:
+      labInstance: ${{ github.event.issue.number }}
   
