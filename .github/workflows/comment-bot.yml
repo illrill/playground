@@ -8,6 +8,9 @@ defaults:
   run:
     shell: bash
 
+permissions:
+  pull-requests: write
+
 jobs:
   bot:
     runs-on: ubuntu-latest
