@@ -31,14 +31,14 @@ jobs:
     if: github.event.label.name == 'bot/deploy'
     steps:
       - run: echo "I was triggered by the label bot/deploy"
-      - uses: checkout@v4
+      - uses: actions/checkout@v4
       - run: git status
   approve:
     runs-on: ubuntu-latest
     if: github.event.label.name == 'bot/approve'
     steps:
       - run: echo "I was triggered by the label bot/approve"
-      - uses: checkout@v4
+      - uses: actions/checkout@v4
       - run: git status
 #  authorize:
 #    runs-on: ubuntu-latest
