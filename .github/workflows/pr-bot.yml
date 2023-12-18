@@ -24,18 +24,18 @@ jobs:
       - name: Add label
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_GITHUB_TOKEN }}
-          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_BODY: "${{ github.event.comment.body }}"
         run: |
-          echo $COMMENT_BODY
-          RECOGNIZED_COMMANDS=$(echo ${COMMENT_BODY} | grep -Eo '/deploy|/lgtm|/approve|/redeploy|/test|/retest')
-          if [[ -n ${RECOGNIZED_COMMANDS} ]]; then
-            AUTHORIZED=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain)
-            if [[ ${AUTHORIZED} == "true" ]]; then
-              for c in ${RECOGNIZED_COMMANDS}; do
-                gh issue edit ${{ github.event.issue.number }} --add-label "bot${c}"
-              done
-            else
-              echo "Sorry, only maintainers are allowed to use slash commands."
-            fi
-          fi
+          echo "${COMMENT_BODY}"
+          #RECOGNIZED_COMMANDS=$(echo ${COMMENT_BODY} | grep -Eo '/deploy|/lgtm|/approve|/redeploy|/test|/retest')
+          #if [[ -n ${RECOGNIZED_COMMANDS} ]]; then
+          #  AUTHORIZED=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain)
+          #  if [[ ${AUTHORIZED} == "true" ]]; then
+          #    for c in ${RECOGNIZED_COMMANDS}; do
+          #      gh issue edit ${{ github.event.issue.number }} --add-label "bot${c}"
+          #    done
+          #  else
+          #    echo "Sorry, only maintainers are allowed to use slash commands."
+          #  fi
+          #fi
 
