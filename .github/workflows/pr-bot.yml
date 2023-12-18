@@ -1,0 +1,41 @@
+name: pr-bot
+on:
+  issue_comment:
+    types:
+      - created
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  pull-requests: write
+
+jobs:
+  command:
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - uses: actions/checkout@v4
+      - name: Add label
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_GITHUB_TOKEN }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          echo $COMMENT_BODY
+          RECOGNIZED_COMMANDS=$(echo ${COMMENT_BODY} | grep -Eo '/deploy|/lgtm|/approve|/redeploy|/test|/retest')
+          if [[ -n ${RECOGNIZED_COMMANDS} ]]; then
+            AUTHORIZED=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain)
+            if [[ ${AUTHORIZED} == "true" ]]; then
+              for c in ${RECOGNIZED_COMMANDS}; do
+                gh issue edit ${{ github.event.issue.number }} --add-label "bot${c}"
+              done
+            else
+              echo "Sorry, only maintainers are allowed to use slash commands."
+            fi
+          fi
+
