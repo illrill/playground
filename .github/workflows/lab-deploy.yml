@@ -12,7 +12,7 @@ defaults:
     shell: bash
 
 jobs:
-  job:
+  lab-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Dump GitHub context
@@ -20,9 +20,5 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
       - uses: actions/checkout@v4
-        with:
-          ref: refs/pull/${{ inputs.labInstance }}/head
-      - run: |
-          git status
-          git diff
       - run: echo "Creating lab instance ${{ inputs.labInstance }}"
+      - run: git status
