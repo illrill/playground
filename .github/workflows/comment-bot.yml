@@ -1,0 +1,25 @@
+name: comment-bot
+on:
+  issue_comment:
+    types:
+      - created
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Add label
+        env:
+          COMMENT_BODY: github.event.comment.body
+        run: |
+          echo ${COMMENT_BODY}
+          echo ${COMMENT_BODY} | grep -Eo '/deploy|/lgtm|/approve|/redeploy|/test|/retest'
