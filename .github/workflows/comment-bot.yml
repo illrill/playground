@@ -19,7 +19,7 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
       - name: Add label
         env:
-          COMMENT_BODY: github.event.comment.body
+          COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
           echo ${COMMENT_BODY}
           echo ${COMMENT_BODY} | grep -Eo '/deploy|/lgtm|/approve|/redeploy|/test|/retest'
