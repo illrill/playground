@@ -16,6 +16,13 @@ defaults:
     shell: bash
 
 jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
   authorize:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request
