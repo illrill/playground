@@ -16,6 +16,10 @@ jobs:
     outputs:
       AUTHORIZED: ${{ steps.authorize.outputs.AUTHORIZED }}
     steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
       - run: echo "PR number ${{ github.event.issue.number }}"
       - id: authorize
         env:
