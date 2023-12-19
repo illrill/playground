@@ -19,7 +19,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.ADMIN_GITHUB_TOKEN }}
 
 jobs:
-  opened:
+  pr:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
@@ -27,40 +27,37 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
-      - name: e2e-test-hold
+      - name: Add default label e2e-test/hold
         run: |
           if [ gh pr view ${{ github.event.number }} --json labels --jq .labels[].name | grep e2e-test ]; then
             gh issue edit ${{ github.event.number }} --add-label "e2e-test/hold"
           fi
-  comment:
+  pr-comment:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request
     steps:
       - uses: actions/checkout@v4
-      - name: Dump GitHub context
+      - id: authorize
+        name: Check if user is authorized to use slash commands
         env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: e2e-test-label
+          COMMENT_CREATOR: "${{ github.event.comment.user.login }}"
+        run: |
+          _authorized=$(gh api repos/${{ github.repository }}/collaborators/${COMMENT_CREATOR}/permission --jq .user.permissions.maintain)
+          echo authorized=$_authorized >> $GITHUB_OUTPUT
+          if [ $_authorized != "true" ]; then
+            gh issue comment ${{ github.event.issue.number }} --body "Sorry @${COMMENT_CREATOR}, only maintainers are allowed to use slash commands."
+          fi
+      # /e2e-test
+      # Transfer slash command to label
+      - name: e2e-test
+        if: steps.authorize.outputs.authorized == 'true'
         env:
           COMMENT_BODY: "${{ github.event.comment.body }}"
         run: |
-          REGEX="\/e2e-test (hold|auto|skip)"
-          if [[ ${COMMENT_BODY} =~ ${REGEX} ]]; then
-            echo "Matched ${BASH_REMATCH[1]}"
-            # gh issue edit ${{ github.event.issue.number }} --add-label "e2e-test/${BASH_REMATCH[1]}"
+          _regex="\/e2e-test (hold|auto|skip)"
+          if [[ ${COMMENT_BODY} =~ ${_regex} ]]; then
+            _new=${BASH_REMATCH[1]}
+            _old=$(gh pr view 10 --json labels --jq .labels[].name | grep 'e2e-test/')
+            _delete=${_old[@]/$_new} && _delete=$(echo $_delete | tr ' ' ,)
+            gh issue edit ${{ github.event.issue.number }} --add-label "${_new}" --remove-label "${_delete}"
           fi
-          #CMD=$(echo "${COMMENT_BODY}" | grep -Eo '/e2e-test ')
-
-          #RECOGNIZED_COMMANDS=$(echo ${COMMENT_BODY} | grep -Eo '/deploy|/lgtm|/approve|/redeploy|/test|/retest')
-          #if [[ -n ${RECOGNIZED_COMMANDS} ]]; then
-          #  AUTHORIZED=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain)
-          #  if [[ ${AUTHORIZED} == "true" ]]; then
-          #    for c in ${RECOGNIZED_COMMANDS}; do
-          #      gh issue edit ${{ github.event.issue.number }} --add-label "bot${c}"
-          #    done
-          #  else
-          #    echo "Sorry, only maintainers are allowed to use slash commands."
-          #  fi
-          #fi
-
