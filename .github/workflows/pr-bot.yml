@@ -21,23 +21,27 @@ env:
 
 jobs:
   intro:
+    # Triggered by pull_request opened
     if: github.event_name == 'pull_request' && github.event.action == 'opened'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Introduce myself
         run: |
-          gh issue comment ${{ github.event.number }} --body "${BODY}"
-        env:
-          BODY: >
-            Hi :wave: I'm a bot that helps with PRs. I understand the following commands:\n\n
-            /e2e-test auto - Execute end-to-end test immediately, and upon any new commits to the PR\n
-            /e2e-test hold - Hold automatic execution of end-to-end test\n
-            /e2e-test skip - Skip end-to-end test for this PR\n\n
-            I will only obey commands written by maintainers.
+          gh issue comment ${{ github.event.number }} --body-file - <<EOF
+          Hi :wave: I'm a bot that helps with PRs. I understand the following slash commands:
+
+          | Command | Description |
+          | ------- | ----------- |
+          | /e2e-test hold | Hold automatic execution of end-to-end test until further notice |
+          | /e2e-test auto | Execute end-to-end test and do so for every new commit to this PR |
+          | /e2e-test skip | Skip end-to-end testing of this PR |
+
+          I only listen to commands posted by maintainers.
+          EOF
   default:
     runs-on: ubuntu-latest
-    # If triggered by pull_request event
+    # Triggered by pull_request opened, reopened, or converted_to_draft
     if: github.event_name == 'pull_request' 
     steps:
       - uses: actions/checkout@v4
@@ -50,7 +54,7 @@ jobs:
           gh issue edit ${{ github.event.number }} --add-label "${_new}" --remove-label "${_delete}"
   commands:
     runs-on: ubuntu-latest
-    # If triggered by pull request comment event
+    # Triggered by pull request comment
     if: github.event.issue.pull_request
     steps:
       - uses: actions/checkout@v4
