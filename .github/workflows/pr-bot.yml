@@ -19,20 +19,16 @@ env:
   GITHUB_TOKEN: ${{ secrets.ADMIN_GITHUB_TOKEN }}
 
 jobs:
-  pr:
+  default:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
       - name: Add default label e2e-test/hold
         run: |
-          if [ gh pr view ${{ github.event.number }} --json labels --jq .labels[].name | grep e2e-test ]; then
+          if [[ $(gh pr view ${{ github.event.number }} --json labels --jq .labels[].name | grep 'e2e-test/') ]]; then
             gh issue edit ${{ github.event.number }} --add-label "e2e-test/hold"
           fi
-  pr-comment:
+  commands:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request
     steps:
@@ -48,8 +44,7 @@ jobs:
             gh issue comment ${{ github.event.issue.number }} --body "Sorry @${COMMENT_CREATOR}, only maintainers are allowed to use slash commands."
           fi
       # /e2e-test
-      # Transfer slash command to label
-      - name: e2e-test
+      - name: Transfer /e2e-test command to label
         if: steps.authorize.outputs.authorized == 'true'
         env:
           COMMENT_BODY: "${{ github.event.comment.body }}"
