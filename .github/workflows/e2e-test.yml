@@ -1,0 +1,19 @@
+name: e2e-test
+on:
+  pull_request:
+    types:
+      - labeled
+      - reopened
+      - synchronize
+      - ready_for_review
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  e2e-test:
+    if: github.event.label.name == 'e2e-test/auto'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "I'm doing my tests"
