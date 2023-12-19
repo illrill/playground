@@ -23,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
+      - uses: actions/checkout@v4
       - name: Add default label e2e-test/hold
         run: |
           if [[ $(gh pr view ${{ github.event.number }} --json labels --jq .labels[].name | grep 'e2e-test/') ]]; then
