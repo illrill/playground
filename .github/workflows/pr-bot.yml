@@ -56,7 +56,7 @@ jobs:
         run: |
           _regex="\/e2e-test (hold|auto|skip)"
           if [[ ${COMMENT_BODY} =~ ${_regex} ]]; then
-            _new=${BASH_REMATCH[1]}
+            _new="e2e-test/${BASH_REMATCH[1]}"
             echo $_new
             _old=$(gh pr view 10 --json labels --jq .labels[].name | grep 'e2e-test/')
             echo $_old
