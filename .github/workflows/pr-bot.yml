@@ -27,11 +27,11 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
-      #- name: e2e-test-hold
-      #  run: |
-      #    if [ gh pr view 10 --json labels --jq .labels[].name | grep e2e-test ]; then
-      #      gh issue edit ${{ github.event.issue.number }} --add-label "e2e-test/hold"
-      #    fi
+      - name: e2e-test-hold
+        run: |
+          if [ gh pr view ${{ github.event.number }} --json labels --jq .labels[].name | grep e2e-test ]; then
+            gh issue edit ${{ github.event.number }} --add-label "e2e-test/hold"
+          fi
   comment:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request
@@ -41,12 +41,17 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
-      #- name: default-hold
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.ADMIN_GITHUB_TOKEN }}
-      #    COMMENT_BODY: "${{ github.event.comment.body }}"
-      #  run: |
-      #    echo "${COMMENT_BODY}"
+      - name: e2e-test-label
+        env:
+          COMMENT_BODY: "${{ github.event.comment.body }}"
+        run: |
+          REGEX="\/e2e-test (hold|auto|skip)"
+          if [[ ${COMMENT_BODY} =~ ${REGEX} ]]; then
+            echo "Matched ${BASH_REMATCH[1]}"
+            # gh issue edit ${{ github.event.issue.number }} --add-label "e2e-test/${BASH_REMATCH[1]}"
+          fi
+          #CMD=$(echo "${COMMENT_BODY}" | grep -Eo '/e2e-test ')
+
           #RECOGNIZED_COMMANDS=$(echo ${COMMENT_BODY} | grep -Eo '/deploy|/lgtm|/approve|/redeploy|/test|/retest')
           #if [[ -n ${RECOGNIZED_COMMANDS} ]]; then
           #  AUTHORIZED=$(gh api repos/${{ github.repository }}/collaborators/${{ github.event.comment.user.login }}/permission --jq .user.permissions.maintain)
