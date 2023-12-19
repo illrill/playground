@@ -4,6 +4,7 @@ on:
     types:
       - opened
       - reopened
+      - converted_to_draft
   issue_comment:
     types:
       - created
@@ -19,18 +20,37 @@ env:
   GITHUB_TOKEN: ${{ secrets.ADMIN_GITHUB_TOKEN }}
 
 jobs:
-  default:
+  intro:
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v4
-      - name: Add default label e2e-test/hold
+      - name: Introduce myself
         run: |
-          if [[ ! $(gh pr view ${{ github.event.number }} --json labels --jq .labels[].name | grep 'e2e-test/') ]]; then
-            gh issue edit ${{ github.event.number }} --add-label "e2e-test/hold"
-          fi
+          gh issue comment ${{ github.event.number }} --body "${BODY}"
+        env:
+          BODY: >
+            Hi :wave: I'm a bot that helps with PRs. I understand the following commands:
+            - /e2e-test auto - Execute end-to-end test immediately, and upon any new commits to the PR
+            - /e2e-test hold - Hold automatic execution of end-to-end test
+            - /e2e-test skip - Skip end-to-end test for this PR
+            I will only obey commands written by maintainers.
+  default:
+    runs-on: ubuntu-latest
+    # If triggered by pull_request event
+    if: github.event_name == 'pull_request' 
+    steps:
+      - uses: actions/checkout@v4
+      # /e2e-test
+      - name: Add or reset default label e2e-test/hold
+        run: |
+          _new="e2e-test/hold"
+          _old=$(gh pr view ${{ github.event.number }} --json labels --jq .labels[].name | grep 'e2e-test/')
+          _delete=${_old[@]/$_new} && _delete=$(echo $_delete | tr ' ' ,)
+          gh issue edit ${{ github.event.number }} --add-label "${_new}" --remove-label "${_delete}"
   commands:
     runs-on: ubuntu-latest
+    # If triggered by pull request comment event
     if: github.event.issue.pull_request
     steps:
       - uses: actions/checkout@v4
@@ -53,7 +73,7 @@ jobs:
           _regex="\/e2e-test (hold|auto|skip)"
           if [[ ${COMMENT_BODY} =~ ${_regex} ]]; then
             _new="e2e-test/${BASH_REMATCH[1]}"
-            _old=$(gh pr view 10 --json labels --jq .labels[].name | grep 'e2e-test/')
+            _old=$(gh pr view ${{ github.event.issue.number }} --json labels --jq .labels[].name | grep 'e2e-test/')
             _delete=${_old[@]/$_new} && _delete=$(echo $_delete | tr ' ' ,)
             gh issue edit ${{ github.event.issue.number }} --add-label "${_new}" --remove-label "${_delete}"
           fi
