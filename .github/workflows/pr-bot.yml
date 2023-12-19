@@ -57,10 +57,7 @@ jobs:
           _regex="\/e2e-test (hold|auto|skip)"
           if [[ ${COMMENT_BODY} =~ ${_regex} ]]; then
             _new="e2e-test/${BASH_REMATCH[1]}"
-            echo $_new
             _old=$(gh pr view 10 --json labels --jq .labels[].name | grep 'e2e-test/')
-            echo $_old
             _delete=${_old[@]/$_new} && _delete=$(echo $_delete | tr ' ' ,)
-            echo $_delete
-            # gh issue edit ${{ github.event.issue.number }} --add-label "${_new}" --remove-label "${_delete}"
+            gh issue edit ${{ github.event.issue.number }} --add-label "${_new}" --remove-label "${_delete}"
           fi
