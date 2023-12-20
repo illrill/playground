@@ -12,6 +12,13 @@ defaults:
     shell: bash
 
 jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
   e2e-test:
     if: github.event.label.name == 'e2e-test/auto'
     runs-on: ubuntu-latest
