@@ -13,7 +13,7 @@ defaults:
 
 jobs:
   e2e-test:
-    if: contains(github.event.issue.labels.*.name, 'e2e-test/auto')
+    if: contains(github.event.pull_request.labels.*.name, 'e2e-test/auto')
     runs-on: ubuntu-latest
     steps:
       - run: echo "I'm doing my tests"
