@@ -1,5 +1,4 @@
 # playground
 
 yoyo
-yaya
 yiyi
