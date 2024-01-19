@@ -1,0 +1,19 @@
+name: output
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Identify
+        run: |
+          echo "resource_ids=$(echo "/subscriptions/fdafdaksljflkdsajkfljdslkfds/fdafda /subscriptions/fdfadsfadsfdas/dfadfa")" >> $GITHUB_ENV
+      - name: Delete
+        run: |
+          echo ${resource_ids}
