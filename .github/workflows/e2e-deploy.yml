@@ -14,4 +14,5 @@ jobs:
   job:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "e2e"
+      - uses: actions/checkout@v2
+      - run: cat README.md

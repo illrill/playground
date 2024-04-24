@@ -6,7 +6,14 @@ jobs:
   slasher:
     runs-on: ubuntu-latest
     steps:
-      - name: slasher
+      - uses: actions/checkout@v2
+      - name: Get PR branch reference
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          PR_BRANCH=$(gh pr view ${{ github.event.issue.number }} --json headRefName --jq .headRefName)
+          [ -n "$PR_BRANCH" ] && echo "PR_BRANCH=$PR_BRANCH" >> $GITHUB_ENV || (echo "Failed to identify PR branch reference" && exit 1)
+      - name: Slash command dispatch
         uses: peter-evans/slash-command-dispatch@v4
         with:
           token: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
@@ -17,5 +24,5 @@ jobs:
             mgmt-cluster 
           dispatch-type: workflow
           static-args: |
-            comment-id: ${{ github.event.comment.id }}
-            ref: ${{ github.event.comment.pull_request.head.ref }}
+            comment-id=${{ github.event.comment.id }}
+            ref=refs/pull/${{ github.event.issue.number }}/merge
