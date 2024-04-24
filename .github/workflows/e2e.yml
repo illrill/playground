@@ -1,0 +1,13 @@
+name: e2e
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "e2e"

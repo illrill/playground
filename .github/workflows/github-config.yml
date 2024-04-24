@@ -1,0 +1,13 @@
+name: github-config
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "github-config"

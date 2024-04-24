@@ -1,0 +1,16 @@
+name: Slash Command Dispatch
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slash Command Dispatch
+        uses: peter-evans/slash-command-dispatch@v4
+        with:
+          token: ${{ secrets.ADMIN_GITHUB_TOKEN }}
+          commands: |
+            e2e           
+            mgmt-cluster 
+          dispatch-type: workflow
