@@ -17,5 +17,5 @@ jobs:
             mgmt-cluster 
           dispatch-type: workflow
           static-args: |
-            comment-id: ${{ github.event.comment.id }}
-            ref: ${{ github.event.comment.pull_request.head.ref }}
+            comment-id=${{ github.event.comment.id }}
+            ref=${{ github.event.comment.pull_request.head.ref }}
