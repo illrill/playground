@@ -19,13 +19,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: cat README.md
-      - name: Dump the client payload context
-        env:
-          PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload) }}
-        run: echo "$PAYLOAD_CONTEXT"
+      - name: Dump the github context
+        run: echo "${{ toJson(github) }}"
       - name: Create check run
         run: |
           PR_NUMBER=${{ github.event.inputs.pr-number }}
+          echo "PR_NUMBER=$PR_NUMBER"
           CHECK_RUN_ID=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/check-runs -X POST -F name="e2e" -F head_sha="$(git rev-parse HEAD)" --jq .id)
           echo "Check run created with ID $CHECK_RUN_ID"
         env:
