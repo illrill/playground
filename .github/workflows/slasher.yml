@@ -25,4 +25,4 @@ jobs:
           dispatch-type: workflow
           static-args: |
             comment-id=${{ github.event.comment.id }}
-            ref=${{ env.PR_BRANCH }}
+            ref=refs/pull/${{ github.event.issue.number }}/merge
