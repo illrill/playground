@@ -10,6 +10,9 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+      - name: Get PR ref
+        run: |
+          gh pr view ${{ github.event.issue.number }}
       - name: slasher
         uses: peter-evans/slash-command-dispatch@v4
         with:
