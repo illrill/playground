@@ -9,7 +9,7 @@ jobs:
       - name: slasher
         uses: peter-evans/slash-command-dispatch@v4
         with:
-          token: ${{ secrets.ADMIN_GITHUB_TOKEN }}
+          token: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
           issue-type: pull-request
           event-type-suffix: -deploy
           commands: |
@@ -18,3 +18,4 @@ jobs:
           dispatch-type: workflow
           static-args: |
             comment-id: ${{ github.event.comment.id }}
+            ref: ${{ github.event.comment.pull_request.head.ref }}
