@@ -1,0 +1,21 @@
+name: slasher
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  slasher:
+    runs-on: ubuntu-latest
+    steps:
+      - name: slasher
+        uses: peter-evans/slash-command-dispatch@v4
+        with:
+          token: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
+          issue-type: pull-request
+          event-type-suffix: -deploy
+          commands: |
+            e2e           
+            mgmt-cluster 
+          dispatch-type: workflow
+          static-args: |
+            comment-id: ${{ github.event.comment.id }}
+            ref: ${{ github.event.comment.pull_request.head.ref }}
