@@ -7,10 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Dump the client payload context
-        env:
-          PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload) }}
-        run: echo "$PAYLOAD_CONTEXT"
       - name: Get PR branch
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -30,3 +26,7 @@ jobs:
           static-args: |
             comment-id=${{ github.event.comment.id }}
             ref=${{ env.PR_BRANCH }}
+      - name: Dump the client payload context
+        env:
+          PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload) }}
+        run: echo "$PAYLOAD_CONTEXT"
