@@ -11,6 +11,8 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
       - name: Get PR ref
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           gh pr view ${{ github.event.issue.number }}
       - name: slasher
