@@ -1,16 +1,20 @@
-name: Slash Command Dispatch
+name: slasher
 on:
   issue_comment:
     types: [created]
 jobs:
-  dispatch:
+  slasher:
     runs-on: ubuntu-latest
     steps:
-      - name: Slash Command Dispatch
+      - name: slasher
         uses: peter-evans/slash-command-dispatch@v4
         with:
           token: ${{ secrets.ADMIN_GITHUB_TOKEN }}
+          issue-type: pull-request
+          event-type-suffix: -deploy
           commands: |
             e2e           
             mgmt-cluster 
           dispatch-type: workflow
+          static-args: |
+            comment-id: ${{ github.event.comment.id }}

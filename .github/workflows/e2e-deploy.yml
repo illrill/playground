@@ -1,6 +1,10 @@
 name: e2e
 on:
   workflow_dispatch:
+    inputs:
+      comment-id:
+        description: 'Comment ID of the dispatching slash command'
+        required: false
 
 defaults:
   run:
