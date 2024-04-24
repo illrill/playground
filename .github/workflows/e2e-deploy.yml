@@ -23,10 +23,10 @@ jobs:
         env:
           PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload) }}
         run: echo "$PAYLOAD_CONTEXT"
-#      - name: Create check run
-#        run: |
-#          PR_NUMBER=${{ github.event.inputs.pr-number }}
-#          CHECK_RUN_ID=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/check-runs -X POST -F name="e2e" -F head_sha="$(git rev-parse HEAD)" --jq .id)
-#          echo "Check run created with ID $CHECK_RUN_ID"
-#        env:
-#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create check run
+        run: |
+          PR_NUMBER=${{ github.event.inputs.pr-number }}
+          CHECK_RUN_ID=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/check-runs -X POST -F name="e2e" -F head_sha="$(git rev-parse HEAD)" --jq .id)
+          echo "Check run created with ID $CHECK_RUN_ID"
+        env:
+          GITHUB_TOKEN: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
