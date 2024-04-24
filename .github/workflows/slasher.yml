@@ -7,12 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Get PR branch reference
+      - name: Get PR branch
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           PR_BRANCH=$(gh pr view ${{ github.event.issue.number }} --json headRefName --jq .headRefName)
-          [ -n "$PR_BRANCH" ] && echo "PR_BRANCH=$PR_BRANCH" >> $GITHUB_ENV || (echo "Failed to identify PR branch reference" && exit 1)
+          [ -n "$PR_BRANCH" ] && echo "PR_BRANCH=$PR_BRANCH" >> $GITHUB_ENV || (echo "Failed to identify PR branch" && exit 1)
       - name: Slash command dispatch
         uses: peter-evans/slash-command-dispatch@v4
         with:
@@ -25,4 +25,8 @@ jobs:
           dispatch-type: workflow
           static-args: |
             comment-id=${{ github.event.comment.id }}
-            ref=refs/pull/${{ github.event.issue.number }}/merge
+            ref=${{ env.PR_BRANCH }}
+      - name: Dump the client payload context
+        env:
+          PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload) }}
+        run: echo "$PAYLOAD_CONTEXT"
