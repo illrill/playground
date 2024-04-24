@@ -7,16 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Get PR ref
+      - name: Get PR branch reference
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          gh pr view ${{ github.event.issue.number }}
-      - name: slasher
+          PR_BRANCH=$(gh pr view ${{ github.event.issue.number }} --json headRefName --jq .headRefName)
+          [ -n "$PR_BRANCH" ] && echo "PR_BRANCH=$PR_BRANCH" >> $GITHUB_ENV || (echo "Failed to identify PR branch reference" && exit 1)
+      - name: Slash command dispatch
         uses: peter-evans/slash-command-dispatch@v4
         with:
           token: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
@@ -28,4 +25,4 @@ jobs:
           dispatch-type: workflow
           static-args: |
             comment-id=${{ github.event.comment.id }}
-            ref=${{ github.event.comment.pull_request.head.ref }}
+            ref=${{ env.PR_BRANCH }}
