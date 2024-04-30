@@ -17,7 +17,7 @@ jobs:
   job:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Print Git Branch and Commit
         run: |
           echo "Git Branch and Commit:"
@@ -31,11 +31,3 @@ jobs:
           echo "  Event Payload: ${{ toJson(github.event) }}"
           echo "  Repository: ${{ github.repository }}"
           echo "  Pull Request: ${{ github.event.pull_request }}"
-      - name: Create check run
-        uses: octokit/request-action@v2.x
-        with:
-          route: POST /repos/${{ github.repository }}/check-runs
-          name: e2e
-          head_sha: ${{ github.sha }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
