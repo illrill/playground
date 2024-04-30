@@ -6,7 +6,10 @@ on:
         description: 'Comment ID of the dispatching slash command'
         required: false
       pr-number:
-        description: 'Pull request number to post check results to'
+        description: 'Pull request number of the dispatching slash command'
+        required: false
+      pr-merge-sha:
+        description: 'Merge commit SHA of the pull request of the dispatching slash command'
         required: false
 
 defaults:
@@ -18,6 +21,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Print Workflow Dispatch Inputs
+        run: |
+          echo "Workflow Dispatch Inputs:"
+          echo "  Comment ID: ${{ github.event.inputs.comment-id }}"
+          echo "  PR Number: ${{ github.event.inputs.pr-number }}"
+          echo "  PR Merge SHA: ${{ github.event.inputs.pr-merge-sha }}"
       - name: Print Git Branch and Commit
         run: |
           echo "Git Branch and Commit:"
