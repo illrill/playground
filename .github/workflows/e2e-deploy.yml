@@ -18,7 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cat README.md
+      - name: Print Git Branch and Commit
+        run: |
+          echo "Git Branch and Commit:"
+          echo "  Branch: ${{ github.ref }}"
+          echo "  Commit: ${{ github.sha }}"
       - name: Print GitHub context
         run: |
           echo "GitHub Context:"
