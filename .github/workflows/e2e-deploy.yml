@@ -5,12 +5,6 @@ on:
       comment-id:
         description: 'Comment ID of the dispatching slash command'
         required: false
-      pr-number:
-        description: 'Pull request number of the dispatching slash command'
-        required: false
-      pr-merge-sha:
-        description: 'Merge commit SHA of the pull request of the dispatching slash command'
-        required: false
 
 defaults:
   run:
@@ -23,18 +17,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set commit status
+        id: commit-status-init
         run: |
-          gh api repos/${{ github.repository }}/statuses/${{ inputs.pr-merge-sha }} \
+          printf 'JOB_START_TIME=%(%s)T\n' >> "$GITHUB_OUTPUT"
+          gh api repos/${{ github.repository }}/statuses/${{ github.ref }} \
             -X POST \
             -f state="pending" \
+            -f description="In progress - This check has started..." \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -f context="${{ github.workflow }} / ${{ github.job }}"
       - uses: actions/checkout@v4
       - name: Print Workflow Dispatch Inputs
         run: |
           echo "Workflow Dispatch Inputs:"
           echo "  Comment ID: ${{ inputs.comment-id }}"
-          echo "  PR Number: ${{ inputs.pr-number }}"
-          echo "  PR Merge SHA: ${{ inputs.pr-merge-sha }}"
       - name: Print Git Branch and Commit
         run: |
           echo "Git Branch and Commit:"
@@ -48,13 +44,18 @@ jobs:
           echo "  Event Payload: ${{ toJson(github.event) }}"
           echo "  Repository: ${{ github.repository }}"
           echo "  Pull Request: ${{ github.event.pull_request }}"
-      - run: sleep 30
+      - run: sleep 45
       - name: Set commit status
+        id: commit-status-final
         if: always()
         run: |
+          JOB_DURATION=$((now - ${{ steps.commit-status-init.outputs.JOB_START_TIME }}))
           JOB_STATUS=${{ job.status }}
-          [ "$JOB_STATUS" == "cancelled" ] && JOB_STATUS="failure"
+          COMMIT_STATUS=${{ job.status }}
+          [ "$JOB_STATUS" == "cancelled" ] && COMMIT_STATUS="failure"
           gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
             -X POST \
-            -f state="$JOB_STATUS" \
+            -f state="$COMMIT_STATUS" \
+            -f description="${JOB_STATUS^} after ${JOB_DURATION}" \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -f context="${{ github.workflow }} / ${{ github.job }}"
