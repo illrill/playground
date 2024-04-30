@@ -1,10 +1,6 @@
 name: e2e
 on:
   workflow_dispatch:
-    inputs:
-      comment-id:
-        description: 'Comment ID of the dispatching slash command'
-        required: false
 
 defaults:
   run:
@@ -17,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set commit status
-        id: commit-status-init
+        id: set-commit-status-started
         run: |
           gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
             -X POST \
             -f state="pending" \
-            -f description="In progress - This check has started..." \
+            -f description="This check has started..." \
             -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -f context="${{ github.workflow }} / ${{ github.job }}"
       - uses: actions/checkout@v4
@@ -45,7 +41,7 @@ jobs:
           echo "  Pull Request: ${{ github.event.pull_request }}"
       - run: sleep 45
       - name: Set commit status
-        id: commit-status-final
+        id: set-commit-status-outcome
         if: always()
         run: |
           JOB_STATUS=${{ job.status }}
@@ -54,6 +50,6 @@ jobs:
           gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
             -X POST \
             -f state="$COMMIT_STATUS" \
-            -f description="Finished with status ${JOB_STATUS^}" \
+            -f description="${JOB_STATUS^}" \
             -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -f context="${{ github.workflow }} / ${{ github.job }}"
