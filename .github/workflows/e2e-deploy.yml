@@ -20,7 +20,7 @@ jobs:
         id: commit-status-init
         run: |
           printf 'JOB_START_TIME=%(%s)T\n' >> "$GITHUB_OUTPUT"
-          gh api repos/${{ github.repository }}/statuses/${{ github.ref }} \
+          gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
             -X POST \
             -f state="pending" \
             -f description="In progress - This check has started..." \
