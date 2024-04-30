@@ -26,8 +26,8 @@ jobs:
         run: |
           gh api repos/${{ github.repository }}/statuses/${{ inputs.pr-merge-sha }} \
             -X POST \
-            -f state=pending \
-            -f context=e2e
+            -f state="pending" \
+            -f context="${{ github.workflow }} / ${{ github.job }}"
       - uses: actions/checkout@v4
       - name: Print Workflow Dispatch Inputs
         run: |
@@ -48,11 +48,13 @@ jobs:
           echo "  Event Payload: ${{ toJson(github.event) }}"
           echo "  Repository: ${{ github.repository }}"
           echo "  Pull Request: ${{ github.event.pull_request }}"
-      - run: sleep 10
+      - run: sleep 30
       - name: Set commit status
         if: always()
         run: |
+          JOB_STATUS=${{ job.status }}
+          [ "$JOB_STATUS" == "cancelled" ] && JOB_STATUS="failure"
           gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
             -X POST \
-            -f state=${{ job.status }} \
-            -f context=e2e
+            -f state="$JOB_STATUS" \
+            -f context="${{ github.workflow }} / ${{ github.job }}"
