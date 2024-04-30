@@ -24,8 +24,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          PR_MERGE_SHA=$(gh pr view ${{ github.event.issue.number }} --json potentialMergeCommit --jq .potentialMergeCommit.oid)
-          [ -n "$PR_MERGE_SHA" ] && echo "PR_MERGE_SHA=$PR_MERGE_SHA" >> $GITHUB_ENV || (echo "Failed to identify PR merge commit SHA" && exit 1)
           PR_BRANCH=$(gh pr view ${{ github.event.issue.number }} --json headRefName --jq .headRefName)
           [ -n "$PR_BRANCH" ] && echo "PR_BRANCH=$PR_BRANCH" >> $GITHUB_ENV || (echo "Failed to identify PR branch" && exit 1)
       - name: Slash command dispatch
@@ -39,6 +37,4 @@ jobs:
           dispatch-type: workflow
           static-args: |
             comment-id=${{ github.event.comment.id }}
-            pr-number=${{ github.event.issue.number }}
-            pr-merge-sha=${{ env.PR_MERGE_SHA }}
             ref=${{ env.PR_BRANCH }}
