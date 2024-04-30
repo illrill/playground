@@ -25,3 +25,4 @@ jobs:
           echo "  Event Payload: ${{ toJson(github.event) }}"
           echo "  Repository: ${{ github.repository }}"
           echo "  Pull Request: ${{ github.event.pull_request }}"
+      - run: echo "$SECONDS"
