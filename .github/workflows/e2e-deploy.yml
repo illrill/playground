@@ -19,7 +19,6 @@ jobs:
       - name: Set commit status
         id: commit-status-init
         run: |
-          printf 'JOB_START_TIME=%(%s)T\n' >> "$GITHUB_OUTPUT"
           gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
             -X POST \
             -f state="pending" \
@@ -49,13 +48,12 @@ jobs:
         id: commit-status-final
         if: always()
         run: |
-          JOB_DURATION=$((now - ${{ steps.commit-status-init.outputs.JOB_START_TIME }}))
           JOB_STATUS=${{ job.status }}
           COMMIT_STATUS=${{ job.status }}
           [ "$JOB_STATUS" == "cancelled" ] && COMMIT_STATUS="failure"
           gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
             -X POST \
             -f state="$COMMIT_STATUS" \
-            -f description="${JOB_STATUS^} after ${JOB_DURATION}" \
+            -f description="Finished with status ${JOB_STATUS^}" \
             -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -f context="${{ github.workflow }} / ${{ github.job }}"
