@@ -1,3 +1,3 @@
 # renovate-playground
 
-yes
+no
