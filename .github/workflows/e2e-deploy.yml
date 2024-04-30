@@ -18,15 +18,23 @@ defaults:
 
 jobs:
   job:
+    env:
+      GITHUB_TOKEN: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
+      - name: Set commit status
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ inputs.pr-merge-sha }} \
+            -X POST \
+            -f state=pending \
+            -f context=e2e
       - uses: actions/checkout@v4
       - name: Print Workflow Dispatch Inputs
         run: |
           echo "Workflow Dispatch Inputs:"
-          echo "  Comment ID: ${{ github.event.inputs.comment-id }}"
-          echo "  PR Number: ${{ github.event.inputs.pr-number }}"
-          echo "  PR Merge SHA: ${{ github.event.inputs.pr-merge-sha }}"
+          echo "  Comment ID: ${{ inputs.comment-id }}"
+          echo "  PR Number: ${{ inputs.pr-number }}"
+          echo "  PR Merge SHA: ${{ inputs.pr-merge-sha }}"
       - name: Print Git Branch and Commit
         run: |
           echo "Git Branch and Commit:"
@@ -40,3 +48,11 @@ jobs:
           echo "  Event Payload: ${{ toJson(github.event) }}"
           echo "  Repository: ${{ github.repository }}"
           echo "  Pull Request: ${{ github.event.pull_request }}"
+      - run: sleep 10
+      - name: Set commit status
+        if: always()
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
+            -X POST \
+            -f state=${{ job.status }} \
+            -f context=e2e
