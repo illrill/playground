@@ -37,6 +37,4 @@ jobs:
             e2e
           dispatch-type: workflow
           static-args: |
-            repository=${{ github.repository }}
-            comment-id=${{ github.event.comment.id }}
             ref=${{ env.PR_BRANCH }}
