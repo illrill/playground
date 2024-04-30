@@ -17,7 +17,7 @@ jobs:
   job:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Print Git Branch and Commit
         run: |
           echo "Git Branch and Commit:"
@@ -31,10 +31,3 @@ jobs:
           echo "  Event Payload: ${{ toJson(github.event) }}"
           echo "  Repository: ${{ github.repository }}"
           echo "  Pull Request: ${{ github.event.pull_request }}"
-      - name: Create check run
-        run: |
-          PR_NUMBER=${{ github.event.inputs.pr-number }}
-          CHECK_RUN_ID=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/check-runs -X POST -F name="e2e" -F head_sha="$(git rev-parse HEAD)" --jq .id)
-          echo "Check run created with ID $CHECK_RUN_ID"
-        env:
-          GITHUB_TOKEN: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
