@@ -1,0 +1,31 @@
+name: slash-bot
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  pull-request:
+    if: github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get pull request branch
+        id: get-pr-branch
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          PR_BRANCH=$(gh pr view ${{ github.event.issue.number }} --json headRefName --jq .headRefName)
+          [ -n "$PR_BRANCH" ] && echo "pr-branch=$PR_BRANCH" >> $GITHUB_OUTPUT || (echo "Failed to identify PR head branch" && exit 1)
+      - name: Dispatch workflow
+        uses: peter-evans/slash-command-dispatch@v4
+        with:
+          token: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
+          reaction-token: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
+          issue-type: pull-request
+          event-type-suffix: -deploy
+          permission: maintain
+          commands: |
+            e2e
+          dispatch-type: workflow
+          static-args: |
+            ref=${{ steps.get-pr-branch.outputs.pr-branch }}
+            comment-id=${{ github.event.comment.id }}
