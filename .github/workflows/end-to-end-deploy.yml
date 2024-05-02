@@ -45,4 +45,4 @@ jobs:
           token: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
           comment-id: ${{ inputs.comment-id }}
           body: |
-            > `${{ github.workflow }} / ${{ github.job }}` result: [${{ job.status }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            > Workflow job `${{ github.workflow }}/${{ github.job }}` result: [${{ job.status }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
