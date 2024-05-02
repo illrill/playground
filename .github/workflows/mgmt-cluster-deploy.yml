@@ -10,10 +10,11 @@ defaults:
   run:
     shell: bash
 
+env:
+  GITHUB_TOKEN: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
+
 jobs:
-  job:
-    env:
-      GITHUB_TOKEN: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
+  job1:
     runs-on: ubuntu-latest
     steps:
       - name: Set commit status
@@ -45,4 +46,37 @@ jobs:
           token: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
           comment-id: ${{ inputs.comment-id }}
           body: |
-            > `${{ github.workflow }} / ${{ github.job }}` result: [${{ job.status }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            > Workflow job `${{ github.workflow }}/${{ github.job }}` result: [${{ job.status }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+  job2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set commit status
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
+            -X POST \
+            -f state="pending" \
+            -f description="This check has started..." \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            -f context="${{ github.workflow }} / ${{ github.job }}"
+      - uses: actions/checkout@v4
+      - run: sleep 45
+      - name: Set commit status
+        if: always()
+        run: |
+          JOB_STATUS=${{ job.status }}
+          COMMIT_STATUS=${{ job.status }}
+          [ "$JOB_STATUS" == "cancelled" ] && COMMIT_STATUS="failure"
+          gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
+            -X POST \
+            -f state="$COMMIT_STATUS" \
+            -f description="${JOB_STATUS^}" \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            -f context="${{ github.workflow }} / ${{ github.job }}"
+      - name: Update comment
+        uses: peter-evans/create-or-update-comment@v4
+        if: inputs.comment-id
+        with:
+          token: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
+          comment-id: ${{ inputs.comment-id }}
+          body: |
+            > Workflow job `${{ github.workflow }}/${{ github.job }}` result: [${{ job.status }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
