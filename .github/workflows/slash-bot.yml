@@ -24,7 +24,9 @@ jobs:
           event-type-suffix: -deploy
           permission: maintain
           commands: |
-            e2e
+            end-to-end
+            mgmt-cluster
+            github-config
           dispatch-type: workflow
           static-args: |
             ref=${{ steps.get-pr-branch.outputs.pr-branch }}

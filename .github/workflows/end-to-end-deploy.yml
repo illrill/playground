@@ -1,0 +1,48 @@
+name: end-to-end
+on:
+  workflow_dispatch:
+    inputs:
+      comment-id:
+        description: 'Optional comment ID to update with the workflow status'
+        required: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  job:
+    env:
+      GITHUB_TOKEN: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set commit status
+        run: |
+          gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
+            -X POST \
+            -f state="pending" \
+            -f description="This check has started..." \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            -f context="${{ github.workflow }} / ${{ github.job }}"
+      - uses: actions/checkout@v4
+      - run: sleep 45
+      - name: Set commit status
+        if: always()
+        run: |
+          JOB_STATUS=${{ job.status }}
+          COMMIT_STATUS=${{ job.status }}
+          [ "$JOB_STATUS" == "cancelled" ] && COMMIT_STATUS="failure"
+          gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
+            -X POST \
+            -f state="$COMMIT_STATUS" \
+            -f description="${JOB_STATUS^}" \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            -f context="${{ github.workflow }} / ${{ github.job }}"
+      - name: Update comment
+        uses: peter-evans/create-or-update-comment@v4
+        if: inputs.comment-id
+        with:
+          token: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
+          comment-id: ${{ inputs.comment-id }}
+          body: |
+            > `${{ github.workflow }} / ${{ github.job }}` result: [${{ job.status }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})

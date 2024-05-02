@@ -1,9 +1,9 @@
-name: e2e
+name: mgmt-cluster
 on:
   workflow_dispatch:
     inputs:
       comment-id:
-        description: 'Comment ID to update with the workflow status'
+        description: 'Optional comment ID to update with the workflow status'
         required: false
 
 defaults:
@@ -38,11 +38,11 @@ jobs:
             -f description="${JOB_STATUS^}" \
             -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -f context="${{ github.workflow }} / ${{ github.job }}"
-      - name: Update comment with workflow status and run URL
+      - name: Update comment
         uses: peter-evans/create-or-update-comment@v4
-        if: always()
+        if: inputs.comment-id
         with:
           token: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
           comment-id: ${{ inputs.comment-id }}
           body: |
-            > Workflow `${{ github.workflow }}` result: [${{ job.status }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            > `${{ github.workflow }} / ${{ github.job }}` result: [${{ job.status }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
