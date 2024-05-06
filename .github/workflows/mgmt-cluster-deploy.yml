@@ -17,9 +17,9 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Set initial commit status
         uses: ./.github/workflows/actions/set-commit-status
-      - uses: actions/checkout@v4
       - run: sleep 45
       - name: Set final commit status
         uses: ./.github/workflows/actions/set-commit-status
@@ -35,6 +35,7 @@ jobs:
   job2:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Set commit status
         run: |
           gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
@@ -43,7 +44,6 @@ jobs:
             -f description="This check has started..." \
             -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -f context="${{ github.workflow }} / ${{ github.job }}"
-      - uses: actions/checkout@v4
       - run: sleep 45
       - name: Set commit status
         if: always()
