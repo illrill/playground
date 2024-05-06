@@ -9,9 +9,9 @@ inputs:
     default: ${{ github.token }}
   status:
     description: |
-      Commit status to set. Must be one of "error", "failure", "cancelled", "pending", "success"). Defaults to the workflow job status. Status "cancelled" is translated as "failure". Empty value is translated as "pending".
+      Commit status to set. Must be one of "error", "failure", "cancelled", "pending", "success"). Defaults to "pending". Status "cancelled" is translated as "failure".
     required: false
-    default: ${{ job.status }}
+    default: 'pending'
   repository:
     description: 'The repository to set the status for (formatted as "owner/repo"). Defaults to the current repository.'
     required: false
@@ -25,9 +25,9 @@ inputs:
     required: false
     default: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
   description:
-    description: 'A short description of the status. Defaults to the workflow job status.'
+    description: 'A short description of the status. Defaults to `"This check has started..."`.'
     required: false
-    default: ${{ job.status }}
+    default: 'This check has started...'
   context: 
     description: 'A string label to differentiate this status from the status of other systems. Defaults to the workflow and job name.'
     required: false
@@ -58,11 +58,8 @@ runs:
         
         # Translate "cancelled" status to "failure"
         [ "$INPUT_STATUS" == "cancelled" ] && INPUT_STATUS="failure"
-
-        # Translate empty status to "pending"
-        [ -z "$INPUT_STATUS" ] && INPUT_STATUS="pending"
         
-        # Set the commit status using the GitHub API
+        # Set the commit status using the Github API
         gh api repos/$INPUT_REPOSITORY/statuses/$INPUT_SHA \
           -X POST \
           -f state="$INPUT_STATUS" \

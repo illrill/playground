@@ -24,6 +24,9 @@ jobs:
       - name: Set final commit status
         uses: ./.github/workflows/actions/set-commit-status
         if: always()
+        with:
+          status: ${{ job.status }}
+          description: ${{ job.status }}
       - name: Update comment
         uses: peter-evans/create-or-update-comment@v4
         if: inputs.comment-id
