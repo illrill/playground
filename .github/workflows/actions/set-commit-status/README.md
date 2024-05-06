@@ -17,6 +17,8 @@ Set Github commit status for a commit: https://docs.github.com/en/rest/commits/s
 ## Example usage
 
 ```yaml
+      - uses: actions/checkout@v4
+      
       - name: Set initial commit status
         uses: ./.github/workflows/actions/set-commit-status
 
