@@ -4,32 +4,24 @@ description: Set Github commit status for a commit
 
 inputs:
   token:
-    description: 'Github token used to set the commit status. Defaults to GITHUB_TOKEN. The token must have "statuses: write" permission.'
     required: false
     default: ${{ github.token }}
   status:
-    description: |
-      Commit status to set. Must be one of "error", "failure", "cancelled", "pending", "success"). Defaults to "pending". Status "cancelled" is translated as "failure".
     required: false
     default: 'pending'
   repository:
-    description: 'The repository to set the status for (formatted as "owner/repo"). Defaults to the current repository.'
     required: false
     default: ${{ github.repository }}
   sha:
-    description: 'The commit SHA to set the status for.'
     required: false
     default: ${{ github.sha }}
   target-url: 
-    description: 'The URL to associate with this status. Defaults to the URL of the workflow run.'
     required: false
     default: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
   description:
-    description: 'A short description of the status. Defaults to `"This check has started..."`.'
     required: false
     default: 'This check has started...'
   context: 
-    description: 'A string label to differentiate this status from the status of other systems. Defaults to the workflow and job name.'
     required: false
     default: ${{ github.workflow }} / ${{ github.job }}
 
@@ -52,7 +44,7 @@ runs:
           echo "Invalid status. Must be one of 'error', 'failure', 'cancelled', 'pending', 'success'."
           exit 1
         fi
-        
+
         # Capitalize the description
         _description="${INPUT_DESCRIPTION^}"
         

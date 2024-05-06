@@ -27,14 +27,14 @@ jobs:
         with:
           status: ${{ job.status }}
           description: ${{ job.status }}
-      - name: Update comment
+      - name: Update comment with job status
         uses: peter-evans/create-or-update-comment@v4
         if: inputs.comment-id
         with:
           token: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
           comment-id: ${{ inputs.comment-id }}
           body: |
-            > Workflow job `${{ github.workflow }}/${{ github.job }}` result: [${{ job.status }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            > _${{ github.workflow }} / ${{ github.job }}: [${{ job.status }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_
   job2:
     runs-on: ubuntu-latest
     steps:
@@ -67,4 +67,4 @@ jobs:
           token: ${{ secrets.SYSUSER_GITHUB_TOKEN }}
           comment-id: ${{ inputs.comment-id }}
           body: |
-            > Workflow job `${{ github.workflow }}/${{ github.job }}` result: [${{ job.status }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            > _${{ github.workflow }} / ${{ github.job }}: [${{ job.status }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_
