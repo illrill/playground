@@ -1,0 +1,71 @@
+name: set-commit-status
+
+description: Set Github commit status for a commit
+
+inputs:
+  token:
+    description: 'Github token used to set the commit status. Defaults to GITHUB_TOKEN. The token must have "statuses: write" permission.'
+    required: false
+    default: ${{ github.token }}
+  status:
+    description: |
+      Commit status to set. Must be one of "error", "failure", "cancelled", "pending", "success"). Defaults to the workflow job status. Status "cancelled" is translated as "failure". Empty value is translated as "pending".
+    required: false
+    default: ${{ job.status }}
+  repository:
+    description: 'The repository to set the status for (formatted as "owner/repo"). Defaults to the current repository.'
+    required: false
+    default: ${{ github.repository }}
+  sha:
+    description: 'The commit SHA to set the status for.'
+    required: false
+    default: ${{ github.sha }}
+  target-url: 
+    description: 'The URL to associate with this status. Defaults to the URL of the workflow run.'
+    required: false
+    default: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+  description:
+    description: 'A short description of the status. Defaults to the workflow job status.'
+    required: false
+    default: ${{ job.status }}
+  context: 
+    description: 'A string label to differentiate this status from the status of other systems. Defaults to the workflow and job name.'
+    required: false
+    default: ${{ github.workflow }} / ${{ github.job }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set commit status
+      env:
+        INPUT_GITHUB_TOKEN: ${{ inputs.token }}
+        INPUT_SHA: ${{ inputs.sha }}
+        INPUT_STATUS: ${{ inputs.status }}
+        INPUT_TARGET_URL: ${{ inputs.target-url }}
+        INPUT_DESCRIPTION: ${{ inputs.description }}
+        INPUT_CONTEXT: ${{ inputs.context }}
+        INPUT_REPOSITORY: ${{ inputs.repository }}
+      shell: bash
+      run: |
+        # Check if the provided status is valid
+        if [[ ! "error failure cancelled pending success" =~ (^|[[:space:]])"$INPUT_STATUS"($|[[:space:]]) ]]; then
+          echo "Invalid status. Must be one of 'error', 'failure', 'cancelled', 'pending', 'success'."
+          exit 1
+        fi
+        
+        # Capitalize the description
+        _description="${INPUT_DESCRIPTION^}"
+        
+        # Translate "cancelled" status to "failure"
+        [ "$INPUT_STATUS" == "cancelled" ] && INPUT_STATUS="failure"
+
+        # Translate empty status to "pending"
+        [ -z "$INPUT_STATUS" ] && INPUT_STATUS="pending"
+        
+        # Set the commit status using the GitHub API
+        gh api repos/$INPUT_REPOSITORY/statuses/$INPUT_SHA \
+          -X POST \
+          -f state="$INPUT_STATUS" \
+          -f description="$_description" \
+          -f target_url="$INPUT_TARGET_URL" \
+          -f context="$INPUT_CONTEXT"
