@@ -1,0 +1,32 @@
+name: github
+on:
+  workflow_dispatch:
+    inputs:
+      lab:
+        required: false
+        default: false
+        description: "Deploy lab instances"
+        type: boolean
+      lab-id:
+        required: false
+        description: "ID number to assign the lab instances"
+        type: string
+      instances:
+        required: true
+        default: '"work-euwe-npr", "mgmt-swec-npr"'
+        description: "Instances to deploy to in matrix"
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        instance: ${{ fromJSON(format('[{0}]', inputs.instances)) }}
+    steps:
+      - run: echo ${{ matrix.instance }}
