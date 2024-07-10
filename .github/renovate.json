@@ -23,7 +23,7 @@
   },
   "kubernetes": {
     "fileMatch": ["instrumentations.yaml"]
-  }
+  },
   "customManagers": [
     {
       "fileMatch": ["mgmt\/values.yaml$"],
