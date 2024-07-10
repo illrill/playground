@@ -1,0 +1,49 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: splunk
+spec:
+  exporter:
+    # Default is gRPC/OTLP
+    endpoint: http://agent-collector.opentelemetry.svc.cluster.local:4317
+  env:
+    # Enable Splunk AlwaysOn Profiler
+    - name: SPLUNK_PROFILER_ENABLED
+      value: "true"
+    - name: SPLUNK_PROFILER_MEMORY_ENABLED
+      value: "true"
+  propagators:
+    - tracecontext
+  sampler:
+    type: always_on
+  nodejs:
+    image: ghcr.io/signalfx/splunk-otel-js/splunk-otel-js:v2.8.0
+    env:
+      - name: OTEL_RESOURCE_ATTRIBUTES
+        value: splunk.zc.method=splunk-otel-js:v2.8.0
+      - name: SPLUNK_METRICS_ENABLED
+        value: "true"
+      - name: SPLUNK_PROFILER_LOGS_ENDPOINT
+        value: http://agent-collector.opentelemetry.svc.cluster.local:4317
+    volumeLimitSize: 200Mi
+  dotnet:
+    image: ghcr.io/signalfx/splunk-otel-dotnet/splunk-otel-dotnet:v1.5.0
+    env:
+      - name: OTEL_DOTNET_AUTO_PLUGINS
+        value: "Splunk.OpenTelemetry.AutoInstrumentation.Plugin, Splunk.OpenTelemetry.AutoInstrumentation"
+      - name: OTEL_RESOURCE_ATTRIBUTES
+        value: splunk.zc.method=splunk-otel-dotnet:v1.5.0
+      # .NET instrumentation uses HTTP/OTLP
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://agent-collector.opentelemetry.svc.cluster.local:4318
+  java:
+    image: ghcr.io/signalfx/splunk-otel-java/splunk-otel-java:v1.32.1
+    env:
+      - name: OTEL_RESOURCE_ATTRIBUTES
+        value: splunk.zc.method=splunk-otel-java:v1.32.1
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://agent-collector.opentelemetry.svc.cluster.local:4317
+      - name: SPLUNK_METRICS_ENABLED
+        value: "true"
+      - name: SPLUNK_METRICS_ENDPOINT
+        value: http://agent-collector.opentelemetry.svc.cluster.local:9943/v2/datapoint
