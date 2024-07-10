@@ -18,10 +18,8 @@
       "commitMessageTopic": "{{depName}}"
     }
   ],
-  {
   "crossplane": {
     "fileMatch": ["providers.yaml"]
-    }
   },
   "customManagers": [
     {
