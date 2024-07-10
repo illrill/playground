@@ -27,7 +27,7 @@ spec:
         value: http://agent-collector.opentelemetry.svc.cluster.local:4317
     volumeLimitSize: 200Mi
   dotnet:
-    image: ghcr.io/signalfx/splunk-otel-dotnet/splunk-otel-dotnet:v1.5.0
+    image: ghcr.io/signalfx/splunk-otel-dotnet/splunk-otel-dotnet:v1.6.0
     env:
       - name: OTEL_DOTNET_AUTO_PLUGINS
         value: "Splunk.OpenTelemetry.AutoInstrumentation.Plugin, Splunk.OpenTelemetry.AutoInstrumentation"
