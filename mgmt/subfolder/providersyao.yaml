@@ -18,7 +18,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
-  package: xpkg.upbound.io/upbound/provider-azure-containerregistry:v1.3.0
+  package: xpkg.upbound.io/upbound/provider-azure-containerregistry:v1.4.0
   runtimeConfigRef:
     name: azure-workload-identity
 
