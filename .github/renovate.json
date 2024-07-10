@@ -14,7 +14,7 @@
       "matchDatasources": ["helm"]
     },
     {
-      "matchManagers": ["helmv3", "regex"],
+      "matchManagers": ["helmv3", "regex", "crossplane", "kubernetes"],
       "commitMessageTopic": "{{depName}}"
     }
   ],
