@@ -21,6 +21,9 @@
   "crossplane": {
     "fileMatch": ["providers.yaml"]
   },
+  "kubernetes": {
+    "fileMatch": ["instrumentations.yaml"]
+  }
   "customManagers": [
     {
       "fileMatch": ["mgmt\/values.yaml$"],
